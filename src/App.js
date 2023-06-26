@@ -22,8 +22,8 @@ function App() {
         <Route path='/' element={<Layout />}>
           <Route index element={<Home />}  />
           <Route path='dashboard' element={<Dashboard />}  />
-          <Route path='summary-report' element={<Summary />}  />
-          <Route path='village-details' element={<Village />}  />
+          <Route path='project-report/summary-report' element={<Summary />}  />
+          <Route path='project-report/village-details' element={<Village />}  />
           <Route path='field-report' element={<FieldReport />}  />
           <Route path='form-report' element={<FormReport />}  />
           <Route path='overall-inventory' element={<Overall/>}  />
