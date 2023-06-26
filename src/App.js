@@ -1,9 +1,6 @@
 import './App.css';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css'
 import '../node_modules/bootstrap/dist/js/bootstrap.bundle'
-import 'admin-lte/dist/css/adminlte.css';
-import 'admin-lte/dist/js/adminlte.min.js';
-import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import { Route, Routes } from 'react-router-dom';
 import Dashboard from './pages/Dashboard';

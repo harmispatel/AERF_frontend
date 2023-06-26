@@ -63,7 +63,7 @@
     border-radius: 40px;
 }
 
-.over_project h2,.summary_acivity h2{
+.over_project h2,.summary_acivity h2,.monthly_distribute h2{
     font-size: 20px;
     margin-bottom: 15px;
 }
@@ -74,8 +74,14 @@
     grid-template-columns: repeat(4 , 1fr);
     column-gap: 20px;
 }
+.impact_box,.unit_analysis{
+    padding: 0 20px;
+    display: grid;
+    grid-template-columns: repeat(3 , 1fr);
+    column-gap: 20px;
+}
 
-.project_box_main .project_box{
+.project_box_main .project_box,.impact_box .project_box{
     background-color: #eef0f4;
     padding: 20px 15px;
     display: flex;
@@ -85,13 +91,14 @@
     position: relative;
 }
 
-.project_box_main .project_box h3{
+.project_box_main .project_box h3,.impact_box .project_box h3{
     font-size: 60px;
     color: #00bf63;
     margin-bottom: 15px;
+    align-items: center;
 }
 
-.project_box_main .project_box p{
+.project_box_main .project_box p,.impact_box .project_box p{
     font-size: 16px;
     color: #000;
     margin-bottom: 0;
@@ -107,7 +114,7 @@
     font-size: 22px;
 }
 
-.summary_acivity p{
+.summary_acivity p,.monthly_distribute p,.over_project p{
     font-size: 16px;
     font-weight: 600;
     color: #000;
@@ -115,7 +122,19 @@
     margin-top: 15px;
     text-align: center;
 }
-
+.recharts-wrapper{
+    width: 100% !important;
+}
+.recharts-wrapper .recharts-surface{
+    width: 100%;
+}
 .activity_map iframe{
-    height: 250px !important;
+    height: 290px !important;
+}
+
+.monthly_distribute{
+    background-color: #fff;
+    padding: 10px 30px;
+    border-radius: 40px;
+    margin-bottom: 30px;
 }

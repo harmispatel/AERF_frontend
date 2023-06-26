@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./index.css";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 // import { FaAngleDown, FaAngleLeft } from "react-icons/fa6";
 
 const Sidebar = () => {
@@ -8,6 +8,11 @@ const Sidebar = () => {
   const [projectReport,setProjectReport] = useState(false)
   const [inventoryReport,setInventoryReport] = useState(false)
 
+  const location = useLocation();
+
+  const currentRoute = location.pathname;
+
+  console.log(currentRoute);
   const handleDropdownClick = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
@@ -30,8 +35,8 @@ const Sidebar = () => {
           {/* <!-- Sidebar Menu --> */}
           <nav className="mt-2">
             <ul className="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-              <li className="nav-item">
-                <Link to="dashboard" className="nav-link">
+              <li className="nav-item" >
+                <Link to="dashboard" className={ currentRoute === '/dashboard' ? "nav-link active" : "nav-link" }>
                   <p>Executive Dashboards</p>
                 </Link>
               </li>
@@ -42,35 +47,35 @@ const Sidebar = () => {
                 {isDropdownOpen && (
                   <ul className="dropdown-menu">
                     <li className="nav-item">
-                      <Link className="nav-link active" to="#" onClick={handleProjectReport}>Project Report</Link>
+                      <Link className={projectReport ? "nav-link active" : "nav-link"} to="#"  onClick={handleProjectReport}>Project Report</Link>
 
                       {projectReport && (
                         <ul className="dropdown-submenu">
                           <li className="nav-item">
-                            <Link to="project-report/summary-report" className={projectReport ? "nav-link active" : "nav-link" }  href="#">Summary Report</Link>
+                            <Link to="project-report/summary-report" className={currentRoute === '/project-report/summary-report' ? "nav-link active" : "nav-link" }>Summary Report</Link>
                           </li>
                           <li className="nav-item">
-                            <Link to="project-report/village-details" className="nav-link" href="#">Village Details</Link>
+                            <Link to="project-report/village-details" className={currentRoute === '/project-report/village-details' ? "nav-link active" : "nav-link" }>Village Details</Link>
                           </li>
                         </ul>
                       )}
                     </li>
                     <li className="nav-item">
-                      <Link className="nav-link" to="field-report">Field Report</Link>
+                      <Link className={currentRoute === '/field-report' ? "nav-link active" : "nav-link" } to="field-report">Field Report</Link>
                     </li>
                     <li className="nav-item">
-                      <Link className="nav-link" to="form-report">Form Report</Link>
+                      <Link className={currentRoute === '/form-report' ? "nav-link active" : "nav-link" } to="form-report">Form Report</Link>
                     </li>
                     <li className="nav-item">
-                      <Link className="nav-link" to="#" onClick={handleInventoryReport}>Inventory Report</Link>
+                      <Link className={inventoryReport ? "nav-link active" : "nav-link"} to="#" onClick={handleInventoryReport}>Inventory Report</Link>
 
                       {inventoryReport && (
                         <ul className="dropdown-submenu">
                           <li className="nav-item">
-                            <Link className="nav-link" to="overall-inventory">Overall Inventory</Link>
+                            <Link className={currentRoute === '/overall-inventory' ? "nav-link active" : "nav-link" } to="overall-inventory">Overall Inventory</Link>
                           </li>
                           <li className="nav-item">
-                            <Link className="nav-link" to="orders">Orders</Link>
+                            <Link className={currentRoute === '/orders' ? "nav-link active" : "nav-link" } to="orders">Orders</Link>
                           </li>
                         </ul>
                       )}
