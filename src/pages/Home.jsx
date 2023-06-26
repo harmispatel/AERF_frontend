@@ -1,17 +1,17 @@
 import React from 'react'
-import Navbar from '../components/Navbar'
+import { Link } from 'react-router-dom'
 
 const Home = () => {
   return (
     <>
-        <Navbar />
+        {/* <Navbar /> */}
         <div className="content-wrapper iframe-mode" data-widget="iframe" data-loading-screen="750">
             <div className="nav navbar navbar-expand navbar-white navbar-light border-bottom p-0">
             <div className="nav-item dropdown">
-                <a className="nav-link bg-danger dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Close</a>
+                <Link className="nav-link bg-danger dropdown-toggle" data-toggle="dropdown" to="#" role="button" aria-haspopup="true" aria-expanded="false">Close</Link>
                 <div className="dropdown-menu mt-0">
-                <a className="dropdown-item" href="#" data-widget="iframe-close" data-type="all">Close All</a>
-                <a className="dropdown-item" href="#" data-widget="iframe-close" data-type="all-other">Close All Other</a>
+                    <Link className="dropdown-item" to="#" data-widget="iframe-close" data-type="all">Close All</Link>
+                    <Link className="dropdown-item" to="#" data-widget="iframe-close" data-type="all-other">Close All Other</Link>
                 </div>
             </div>
             <a className="nav-link bg-light" href="#" data-widget="iframe-scrollleft"><i className="fas fa-angle-double-left"></i></a>
@@ -25,7 +25,7 @@ const Home = () => {
             </div>
             <div className="tab-loading">
                 <div>
-                <h2 className="display-4">Tab is loading <i className="fa fa-sync fa-spin"></i></h2>
+                    <h2 className="display-4">Tab is loading <i className="fa fa-sync fa-spin"></i></h2>
                 </div>
             </div>
             </div>
