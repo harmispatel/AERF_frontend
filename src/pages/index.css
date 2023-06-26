@@ -1,0 +1,121 @@
+.content-wrapper{
+    margin-left: 270px !important;
+    height:100vh;
+    background-color: transparent !important;
+    border-radius: 20px;
+    margin-right: 100px;
+    margin-top: 100px;
+}
+
+.fillter_part{
+    background-color: #fff;
+    padding: 10px 30px;
+    border-radius: 40px;
+    margin-bottom: 30px;
+}
+
+.fillter_part .fillter_box .form-group{
+    margin: 0;
+    position: relative;
+}
+
+.fillter_part .fillter_box .form-group .form-select{
+    background-image: none;
+    border: none;
+    border-radius: 0;
+    border-bottom: 2px solid #bfbfbf;
+    padding: 0;
+}
+
+.fillter_part .fillter_box .form-group .form-select:focus{
+    box-shadow: none;
+}
+
+.fillter_part .fillter_box .form-group span{
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    background-color: #d62527;
+    color: #fff;
+    font-size: 14px;
+    top: 50%;
+    right: 10px;
+    transform: translate(0 , -50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.fillter_part .fillter_box .form-group span .icon{
+    width: 13px;
+    height: 13px;
+}
+
+.fillter_part .fillter_box h3{
+    font-size: 20px;
+    margin: 0;
+}
+
+.over_project,.summary_acivity{
+    padding: 15px 30px;
+    margin-bottom: 30px;
+    background-color: #fff;
+    border-radius: 40px;
+}
+
+.over_project h2,.summary_acivity h2{
+    font-size: 20px;
+    margin-bottom: 15px;
+}
+
+.project_box_main{
+    padding: 0 20px;
+    display: grid;
+    grid-template-columns: repeat(4 , 1fr);
+    column-gap: 20px;
+}
+
+.project_box_main .project_box{
+    background-color: #eef0f4;
+    padding: 20px 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.project_box_main .project_box h3{
+    font-size: 60px;
+    color: #00bf63;
+    margin-bottom: 15px;
+}
+
+.project_box_main .project_box p{
+    font-size: 16px;
+    color: #000;
+    margin-bottom: 0;
+    text-align: center;
+    font-weight: 700;
+}
+
+.project_box .project_box_icon{
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    color: #f4c01e;
+    font-size: 22px;
+}
+
+.summary_acivity p{
+    font-size: 16px;
+    font-weight: 600;
+    color: #000;
+    margin: 0;
+    margin-top: 15px;
+    text-align: center;
+}
+
+.activity_map iframe{
+    height: 250px !important;
+}

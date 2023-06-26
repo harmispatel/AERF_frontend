@@ -7,6 +7,9 @@
     padding: 15px 30px !important;
     border: none;
     justify-content: space-between;
+    position: fixed;
+    width: 100%;
+    top: 0;
 }
 .navbar_logo{
     display: flex;
@@ -27,12 +30,12 @@
     font-weight: 700;
     padding: 5px 40px;
     border-radius: 20px;
+    transition: all 0.5s ease-in-out;
 }
 .admin-btn:hover{
     background-color: transparent;
     border:1px solid #d62527;
     color:#d62527;
-    transition: all 0.5s ease-in-out;
 }
 
 /* sidebar */
@@ -47,9 +50,4 @@
 .main-sidebar ul li a{
     color: #d62527 !important;
     font-weight: 700;
-}
-
-/* main_page */
-.content-wrapper{
-    margin-left: 270px !important;
 }
