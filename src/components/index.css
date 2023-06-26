@@ -28,11 +28,17 @@
     padding: 5px 40px;
     border-radius: 20px;
 }
+.admin-btn:hover{
+    background-color: transparent;
+    border:1px solid #d62527;
+    color:#d62527;
+    transition: all 0.5s ease-in-out;
+}
 
 /* sidebar */
 .main-sidebar{
-    float: left;
-    position: relative !important;
+    position: fixed !important;
+    top: 100px !important;
     height: 100vh !important;
     background-color: #fff !important;
     box-shadow: none !important;
