@@ -32,12 +32,12 @@ const Sidebar = () => {
             <ul className="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
               <li className="nav-item">
                 <Link to="dashboard" className="nav-link">
-                  <p>Executive Dashboards</p>
+                  Executive Dashboards
                 </Link>
               </li>
               <li className={`nav-item ${isDropdownOpen ? 'open' : ''}`}>
                 <Link to="#" className={isDropdownOpen ? "nav-link active" : "nav-link" } onClick={handleDropdownClick}>
-                  <p>Biostove project</p>
+                 Biostove project
                 </Link>
                 {isDropdownOpen && (
                   <ul className="dropdown-menu">
@@ -81,7 +81,7 @@ const Sidebar = () => {
               </li>
               <li className="nav-item">
                 <a href="#" className="nav-link">
-                  <p>Project - II</p>
+                  Project - II
                 </a>
               </li>
         </ul>
