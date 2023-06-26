@@ -1,12 +1,10 @@
 import React from 'react'
-import Navbar from '../components/Navbar'
 import "./index.css";
 import { FaAngleDown , FaStar } from "react-icons/fa6";
 
 const Home = () => {
     return (
         <>
-            <Navbar />
             <div className="content-wrapper iframe-mode" data-widget="iframe" data-loading-screen="750">
                 <div className='summary_main'>
                     <div className='fillter_part'>

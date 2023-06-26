@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./index.css";
+import { Link } from "react-router-dom";
 // import { FaAngleDown, FaAngleLeft } from "react-icons/fa6";
 
 const Sidebar = () => {
@@ -30,46 +31,46 @@ const Sidebar = () => {
           <nav className="mt-2">
             <ul className="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
               <li className="nav-item">
-                <a href="#" className="nav-link">
+                <Link to="dashboard" className="nav-link">
                   <p>Executive Dashboards</p>
-                </a>
+                </Link>
               </li>
               <li className={`nav-item ${isDropdownOpen ? 'open' : ''}`}>
-                <a href="#" className={isDropdownOpen ? "nav-link active" : "nav-link" } onClick={handleDropdownClick}>
+                <Link to="#" className={isDropdownOpen ? "nav-link active" : "nav-link" } onClick={handleDropdownClick}>
                   <p>Biostove project</p>
-                </a>
+                </Link>
                 {isDropdownOpen && (
                   <ul className="dropdown-menu">
                     <li className="nav-item">
-                      <a className="nav-link active" href="#" onClick={handleProjectReport}>Project Report</a>
+                      <Link className="nav-link active" to="#" onClick={handleProjectReport}>Project Report</Link>
 
                       {projectReport && (
                         <ul className="dropdown-submenu">
                           <li className="nav-item">
-                            <a className={projectReport ? "nav-link active" : "nav-link" }  href="#">Summary Report</a>
+                            <Link to="project-report/summary-report" className={projectReport ? "nav-link active" : "nav-link" }  href="#">Summary Report</Link>
                           </li>
                           <li className="nav-item">
-                            <a className="nav-link" href="#">Village Details</a>
+                            <Link to="project-report/village-details" className="nav-link" href="#">Village Details</Link>
                           </li>
                         </ul>
                       )}
                     </li>
                     <li className="nav-item">
-                      <a className="nav-link" href="#">Field Report</a>
+                      <Link className="nav-link" to="field-report">Field Report</Link>
                     </li>
                     <li className="nav-item">
-                      <a className="nav-link" href="#">Form Report</a>
+                      <Link className="nav-link" to="form-report">Form Report</Link>
                     </li>
                     <li className="nav-item">
-                      <a className="nav-link" href="#" onClick={handleInventoryReport}>Inventory Report</a>
+                      <Link className="nav-link" to="#" onClick={handleInventoryReport}>Inventory Report</Link>
 
                       {inventoryReport && (
                         <ul className="dropdown-submenu">
                           <li className="nav-item">
-                            <a className="nav-link" href="#">Overall Inventory</a>
+                            <Link className="nav-link" to="overall-inventory">Overall Inventory</Link>
                           </li>
                           <li className="nav-item">
-                            <a className="nav-link" href="#">Orders</a>
+                            <Link className="nav-link" to="orders">Orders</Link>
                           </li>
                         </ul>
                       )}
