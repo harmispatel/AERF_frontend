@@ -1,6 +1,6 @@
 .content-wrapper{
     margin-left: 270px !important;
-    height:100vh;
+    /* height:100vh; */
     background-color: transparent !important;
     border-radius: 20px;
     margin-right: 100px;
@@ -81,7 +81,7 @@
     column-gap: 20px;
 }
 
-.project_box_main .project_box,.impact_box .project_box,.village_detail_inr .village_detail_box,.field_activity_inr_bottom .field_activity_box{
+.project_box_main .project_box,.impact_box .project_box,.village_detail_inr .village_detail_box,.field_activity_inr_bottom .field_activity_box,.overall_info_main .overall_info_box{
     background-color: #eef0f4;
     padding: 20px 15px;
     display: flex;
@@ -92,7 +92,7 @@
 }
 
 
-.project_box_main .project_box h3,.impact_box .project_box h3,.village_detail_inr .village_detail_box h3,.field_activity_inr_bottom .field_activity_box h3{
+.project_box_main .project_box h3,.overall_info_main .overall_info_box h3,.impact_box .project_box h3,.village_detail_inr .village_detail_box h3,.field_activity_inr_bottom .field_activity_box h3{
 
     font-size: 60px;
     color: #00bf63;
@@ -100,7 +100,7 @@
     align-items: center;
 }
 
-.project_box_main .project_box p, .impact_box .project_box p,.village_detail_inr .village_detail_box p,.field_activity_inr_bottom .field_activity_box p,.survey_graph_data p,.siteWise_graph p{
+.project_box_main .project_box p,.overall_info_main .overall_info_box p, .impact_box .project_box p,.village_detail_inr .village_detail_box p,.field_activity_inr_bottom .field_activity_box p,.survey_graph_data p,.siteWise_graph p{
     font-size: 16px;
     color: #000;
     margin-bottom: 0;
@@ -150,11 +150,15 @@
     margin-bottom: 20px;
 }
 
-.village_detail_main .location_map,.village_detail_main .village_detail_inr,.data_table,.field_main .field_activity,.survey_data,.sitewise_activity{
+.village_detail_main .location_map,.village_detail_main .village_detail_inr,.data_table,.field_main .field_activity,.survey_data,.sitewise_activity,.overall_inventory .overall_inventory_graph,.overall_main .overall_info_main{
     padding: 20px;
     background-color: #fff;
     border-radius: 20px;
     margin-bottom: 30px;
+}
+
+.village_detail_main .village_detail_inr,.village_detail_main .data_table,.overall_inventory .data_table{
+    margin-bottom: 0 !important;
 }
 
 .village_detail_main .village_detail_box_main{
@@ -163,7 +167,7 @@
     column-gap: 20px;
 }
 
-.village_detail_main .location_map h2,.village_detail_main h2,.data_table h2,.field_main .field_activity h2,.survey_data h2{
+.village_detail_main .location_map h2,.overall_info_main h2,.village_detail_main h2,.data_table h2,.field_main .field_activity h2,.survey_data h2,.overall_inventory_graph h2{
     font-size: 20px;
     margin-bottom: 15px;
 }
@@ -306,3 +310,137 @@
     color: #000;
     background-color: #f3c5c6;
 }
+
+.status_part ul{
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    display: flex;
+    align-items: center;
+}
+
+.status_part ul li{
+    margin: 0 5px;
+}
+
+.status_part ul li label{
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.status_part ul li label.active{
+    background-color: #00bf63;
+}
+
+.status_part ul li label.inactive{
+    background-color: #737373;
+}
+
+
+.overall_inventory .data_table .table thead th{
+    border: none;
+    padding:10px 10px 30px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.overall_inventory .data_table .table tbody td{
+    border-bottom: 0;
+    padding:15px 10px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+/* custom check box */
+
+.tb_check {
+    display: block;
+    position: relative;
+    padding-left: 35px;
+    margin-bottom: 0;
+    cursor: pointer;
+    font-size: 22px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+
+  .tb_check input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+  }
+
+  .checkmark {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    height: 25px;
+    width: 25px;
+    background-color: #eee;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: translate(-50% , -50%);
+  }
+
+  .tb_check:hover input ~ .checkmark {
+    background-color: #ccc;
+  }
+
+  .tb_check input:checked ~ .checkmark {
+    background-color: #d9d9d9;
+  }
+  
+  .check_icon {
+    display: none;
+  }
+ 
+  .tb_check input:checked ~ .checkmark .check_icon {
+    display: block;
+  }
+  
+  .tb_check .check_icon{
+    color: #00bf63;
+    font-size: 20px;
+  }
+
+  .action_bt{
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+  }
+  .action_bt a{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+  }
+
+  .order_inventory .data_table th{
+    padding: 10px 20px 30px;
+  }
+
+  .order_inventory .data_table td{
+    padding: 15px 10px;
+  }
+
+  .order_inventory .data_table th,.order_inventory .data_table td{
+    text-align: center;
+    vertical-align: middle;
+    border: none;
+  }
+
+  .order_data_table_bt .add_bt{
+    padding: 5px 15px;
+    font-size: 12px;
+    font-weight: 700;
+    border-radius: 20px;
+    color: #000;
+    background-color: #f3c5c6;
+    margin-right: 15px;
+  }
