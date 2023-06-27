@@ -36,7 +36,7 @@ const Sidebar = () => {
           <nav className="mt-2">
             <ul className="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
               <li className="nav-item" >
-                <Link to="dashboard" className={ currentRoute === '/dashboard' ? "nav-link active" : "nav-link" }>
+                <Link to="/" className={ currentRoute === '/' ? "nav-link active" : "nav-link" }>
                   <p>Executive Dashboards</p>
                 </Link>
               </li>
@@ -85,9 +85,9 @@ const Sidebar = () => {
                 )}
               </li>
               <li className="nav-item">
-                <a href="#" className="nav-link">
+                <Link to="#" className="nav-link">
                   Project - II
-                </a>
+                </Link>
               </li>
         </ul>
 
