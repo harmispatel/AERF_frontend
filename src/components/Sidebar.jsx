@@ -23,6 +23,8 @@ const Sidebar = () => {
     setInventoryReport(!inventoryReport)
   }
 
+  console.log(currentRoute);
+
   return (
     <>
       <aside className="main-sidebar sidebar-dark-primary elevation-4">
@@ -34,7 +36,7 @@ const Sidebar = () => {
           <nav className="mt-2">
             <ul className="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
               <li className="nav-item" >
-                <Link to="/" className={ currentRoute === '/' ? "nav-link active" : "nav-link" }>
+                <Link to="/" className={ currentRoute === '/project-report/summary-report' ? "nav-link active" : "nav-link" }>
                   <p>Executive Dashboards</p>
                 </Link>
               </li>
@@ -45,7 +47,7 @@ const Sidebar = () => {
                 {isDropdownOpen && (
                   <ul className="dropdown-menu">
                     <li className="nav-item">
-                      <Link className={projectReport ? "nav-link active" : "nav-link"} to="#"  onClick={handleProjectReport}>Project Report</Link>
+                      <Link className={ projectReport ? "nav-link active" : "nav-link"} to="#"  onClick={handleProjectReport}>Project Report</Link>
 
                       {projectReport && (
                         <ul className="dropdown-submenu">

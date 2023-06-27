@@ -1,7 +1,30 @@
 import React from 'react'
 import { FaAngleDown } from "react-icons/fa6";
+import { Bar, BarChart, CartesianGrid, Tooltip, XAxis, YAxis } from 'recharts';
 
 const Overall = () => {
+  const sitewisedata = [
+    {
+      name: 'LTI-1',
+      uv: 180,
+      pv: 500
+    },
+    {
+      name: 'Donor-1',
+      uv: 50,
+      pv: 300
+    },
+    {
+      name: 'Donor-2',
+      uv: 40,
+      pv: 500
+    },
+    {
+      name: 'Donor-3',
+      uv: 200,
+      pv: 600
+    }
+  ];
   return (
     <>
       <div className="content-wrapper iframe-mode" data-widget="iframe" data-loading-screen="750">
@@ -98,6 +121,34 @@ const Overall = () => {
                         <td>300</td>
                         <td>Allocated</td>
                       </tr>
+                      <tr>
+                        <td>3</td>
+                        <td>Pratik</td>
+                        <td>Donor2</td>
+                        <td>300</td>
+                        <td>Allocated</td>
+                      </tr>
+                      <tr>
+                        <td>4</td>
+                        <td>Pratik</td>
+                        <td>Donor2</td>
+                        <td>300</td>
+                        <td>Allocated</td>
+                      </tr>
+                      <tr>
+                        <td>5</td>
+                        <td>Pratik</td>
+                        <td>Donor2</td>
+                        <td>300</td>
+                        <td>Allocated</td>
+                      </tr>
+                      <tr>
+                        <td>6</td>
+                        <td>Pratik</td>
+                        <td>Donor2</td>
+                        <td>300</td>
+                        <td>Allocated</td>
+                      </tr>
                     </tbody>
                   </table>
                 </div>
@@ -105,6 +156,28 @@ const Overall = () => {
               <div className='col-md-6'>
                 <div className='overall_inventory_graph h-100'>
                   <h2>Distribution</h2>
+                  <div className='siteWise_graph'>
+                    <BarChart
+                      width={900}
+                      height={300}
+                      data={sitewisedata}
+                      margin={{
+                        top: 5,
+                        right: 0,
+                        left: 0,
+                        bottom: 5,
+                      }}
+                    >
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="name" />
+                      <YAxis type="number" domain={[0, 600]} />
+                      <Tooltip />
+                      <Bar dataKey="pv" barSize={80} fill="#004aad" />
+                      <Bar dataKey="uv" barSize={80} fill="#38b6ff" />
+                      {/* <Bar dataKey="mv" barSize={80} fill="#004aad" /> */}
+                    </BarChart>
+                    <p>Donor Wise Distribution</p>
+                  </div>
                 </div>
               </div>
             </div>
