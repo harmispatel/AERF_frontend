@@ -1,7 +1,6 @@
 import './App.css';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css'
 import '../node_modules/bootstrap/dist/js/bootstrap.bundle'
-import Home from './pages/Home';
 import { Route, Routes } from 'react-router-dom';
 import Dashboard from './pages/Dashboard';
 import Layout from './components/Layout';

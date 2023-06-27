@@ -9,10 +9,8 @@ const Sidebar = () => {
   const [inventoryReport,setInventoryReport] = useState(false)
 
   const location = useLocation();
-
   const currentRoute = location.pathname;
-
-  console.log(currentRoute);
+  
   const handleDropdownClick = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
