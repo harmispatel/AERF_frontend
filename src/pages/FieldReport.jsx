@@ -1,5 +1,5 @@
 import React from 'react'
-import { FaAngleDown, FaIndianRupeeSign } from "react-icons/fa6";
+import { FaAngleDown, FaIndianRupeeSign, FaMagnifyingGlass, FaDownload } from "react-icons/fa6";
 import { Bar, BarChart, CartesianGrid, Line, LineChart, Tooltip, XAxis, YAxis } from 'recharts';
 
 const FieldReport = () => {
@@ -115,7 +115,7 @@ const FieldReport = () => {
               </div>
             </div>
           </div>
-          <div className='field_activity'> 
+          <div className='field_activity'>
             <h2>Activity</h2>
             <div className='field_activity_inr'>
               <div className='field_activity_box'>
@@ -143,7 +143,7 @@ const FieldReport = () => {
                 <h3>500</h3>
                 <p>Amount Due</p>
                 <FaIndianRupeeSign className='icon' />
-              </div>  
+              </div>
             </div>
             <div className='field_activity_inr_bottom'>
               <div className='field_activity_box'>
@@ -167,9 +167,9 @@ const FieldReport = () => {
         </div>
 
         <div className='survey_data'>
-            <h2>Survey Collection</h2>
-            <div className='survey_graph_data'>
-              <div>
+          <h2>Survey Collection</h2>
+          <div className='survey_graph_data'>
+            <div>
               <LineChart
                 width={500}
                 height={300}
@@ -193,67 +193,12 @@ const FieldReport = () => {
                 <Line type="monotone" dataKey="uv" stroke="#82ca9d" />
               </LineChart>
               <p>EPS Collected</p>
-              </div>
-                <div>
-                  <LineChart
-                    width={500}
-                    height={300}
-                    data={surveyData}
-                    margin={{
-                      top: 5,
-                      right: 0,
-                      left: 0,
-                      bottom: 5,
-                    }}
-                  >
-                    <XAxis dataKey="name" />
-                    <YAxis type="number" domain={[0, 30]} />
-                    <Tooltip />
-                    <Line
-                      type="monotone"
-                      dataKey="pv"
-                      stroke="#38b6ff"
-                      activeDot={{ r: 8 }}
-                    />
-                    <Line type="monotone" dataKey="uv" stroke="#82ca9d" />
-                  </LineChart>
-                  <p>Distribution Forms Filled</p>
-                </div>
-              <div>
-                <LineChart
-                  width={500}
-                  height={300}
-                  data={surveyData}
-                  margin={{
-                    top: 5,
-                    right: 0,
-                    left: 0,
-                    bottom: 5,
-                  }}
-                >
-                  <XAxis dataKey="name" />
-                  <YAxis type="number" domain={[0, 30]} />
-                  <Tooltip />
-                  <Line
-                    type="monotone"
-                    dataKey="pv"
-                    stroke="#38b6ff"
-                    activeDot={{ r: 8 }}
-                  />
-                  <Line type="monotone" dataKey="uv" stroke="#82ca9d" />
-                </LineChart>
-                <p>POS Collected</p>
-              </div>
             </div>
-        </div>
-
-        <div className='sitewise_activity'>
-            <h2>Site Wise Activity</h2>
-            <div className='siteWise_graph'>
-              <BarChart
-                width={900}
+            <div>
+              <LineChart
+                width={500}
                 height={300}
-                data={sitewisedata}
+                data={surveyData}
                 margin={{
                   top: 5,
                   right: 0,
@@ -261,16 +206,172 @@ const FieldReport = () => {
                   bottom: 5,
                 }}
               >
-                <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" />
-                <YAxis type="number" domain={[0, 200]} />
+                <YAxis type="number" domain={[0, 30]} />
                 <Tooltip />
-                <Bar dataKey="pv" barSize={80} fill="#38b6ff" />
-                <Bar dataKey="uv" barSize={80} fill="#5271ff" />
-                <Bar dataKey="mv" barSize={80} fill="#004aad" />
-              </BarChart>
-              <p>Sitewise Field Activity</p>
+                <Line
+                  type="monotone"
+                  dataKey="pv"
+                  stroke="#38b6ff"
+                  activeDot={{ r: 8 }}
+                />
+                <Line type="monotone" dataKey="uv" stroke="#82ca9d" />
+              </LineChart>
+              <p>Distribution Forms Filled</p>
             </div>
+            <div>
+              <LineChart
+                width={500}
+                height={300}
+                data={surveyData}
+                margin={{
+                  top: 5,
+                  right: 0,
+                  left: 0,
+                  bottom: 5,
+                }}
+              >
+                <XAxis dataKey="name" />
+                <YAxis type="number" domain={[0, 30]} />
+                <Tooltip />
+                <Line
+                  type="monotone"
+                  dataKey="pv"
+                  stroke="#38b6ff"
+                  activeDot={{ r: 8 }}
+                />
+                <Line type="monotone" dataKey="uv" stroke="#82ca9d" />
+              </LineChart>
+              <p>POS Collected</p>
+            </div>
+          </div>
+        </div>
+
+        <div className='sitewise_activity'>
+          <h2>Site Wise Activity</h2>
+          <div className='siteWise_graph'>
+            <BarChart
+              width={900}
+              height={300}
+              data={sitewisedata}
+              margin={{
+                top: 5,
+                right: 0,
+                left: 0,
+                bottom: 5,
+              }}
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" />
+              <YAxis type="number" domain={[0, 200]} />
+              <Tooltip />
+              <Bar dataKey="pv" barSize={80} fill="#38b6ff" />
+              <Bar dataKey="uv" barSize={80} fill="#5271ff" />
+              <Bar dataKey="mv" barSize={80} fill="#004aad" />
+            </BarChart>
+            <p>Sitewise Field Activity</p>
+          </div>
+        </div>
+
+        <div className='data_table'>
+          <div className='data_table_header'>
+            <h2>Question Responses</h2>
+            <div className='d-flex align-items-center'>
+              <div className='data_search'>
+                <input className='form-control' placeholder='Search Name / Contact' type='text' />
+                <FaMagnifyingGlass className='icon' />
+              </div>
+              <span className='ml-3'><FaDownload className='icon' /></span>
+            </div>
+          </div>
+          <table className='table m-0'>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Contact</th>
+                <th>Village</th>
+                <th>Block</th>
+                <th>Wadi</th>
+                <th>Date of Distribution</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td>Beneficiary</td>
+                <td>98xxx xxxx</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                  <div className='status_part'>
+                    <ul>
+                      <li><label className='active'></label></li>
+                      <li><label className='active'></label></li>
+                      <li><label className='active'></label></li>
+                    </ul>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>1</td>
+                <td>Beneficiary</td>
+                <td>98xxx xxxx</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                  <div className='status_part'>
+                    <ul>
+                      <li><label className='active'></label></li>
+                      <li><label className='inactive'></label></li>
+                      <li><label className='inactive'></label></li>
+                    </ul>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>1</td>
+                <td>Beneficiary</td>
+                <td>98xxx xxxx</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                  <div className='status_part'>
+                    <ul>
+                      <li><label className='active'></label></li>
+                      <li><label className='inactive'></label></li>
+                      <li><label className='inactive'></label></li>
+                    </ul>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>1</td>
+                <td>Beneficiary</td>
+                <td>98xxx xxxx</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                  <div className='status_part'>
+                    <ul>
+                      <li><label className='inactive'></label></li>
+                      <li><label className='active'></label></li>
+                      <li><label className='inactive'></label></li>
+                    </ul>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </>
