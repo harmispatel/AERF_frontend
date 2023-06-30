@@ -43,7 +43,7 @@ const Orders = () => {
                         <option>option 2</option>
                         <option>option 3</option>
                       </select>
-                      <span>
+                      <span className="icon-box">
                         <FaAngleDown className="icon" />
                       </span>
                     </div>

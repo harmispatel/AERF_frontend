@@ -1,18 +1,17 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "../index.css";
 import { FaAngleDown, FaIndianRupeeSign, FaStar } from "react-icons/fa6";
-import {
-  ComposedChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Line,
-  LineChart,
-} from "recharts";
+import DatePicker from "react-datepicker";
+import { ComposedChart,Bar,XAxis,YAxis,CartesianGrid,Tooltip,Line,LineChart } from "recharts";
+import { monthlyGraph, impactValues, unitGraph } from "../../services/Summary";
 
 const Summary = () => {
+
+const [startDate, setStartDate] = useState('');
+const [monthlyData,setMonthlyData] = useState([])
+const [impactAnalyasis,setImpactAnalyasis] = useState([])
+const [unitAnalyasis,setUnitAnalyasis] = useState([])
+
   const data = [
     {
       name: "Kollewadi",
@@ -30,33 +29,6 @@ const Summary = () => {
       name: "Bhambed",
       uv: 180,
     },
-  ];
-
-  const monthlyData = [
-    {
-      name: "Jan,23",
-      uv: 150,
-    },
-    {
-      name: "Feb,23",
-      uv: 170,
-    },
-    {
-      name: "Mar,23",
-      uv: 90,
-    },
-    {
-      name: "Apr,23",
-      uv: 140,
-    },
-    {
-      name: "May,23",
-      uv: 100,
-    },
-    {
-      name: "June,23",
-      uv: 120,
-    },
   ]
 
   const averageFuelData =[
@@ -69,6 +41,45 @@ const Summary = () => {
       uv: 2.5,
     }
   ]
+
+  useEffect(() => {
+    fetchData()
+    impactData()
+    unitGraphValues()
+  }, []);
+  
+  const month = 5;
+  const donorId = 1;
+
+  const queryParams = `month=${month}&donor_id=${donorId}`
+
+  const fetchData = async () => {
+    return await monthlyGraph(queryParams)
+      .then(response => {
+        setMonthlyData(response.data.data);
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      })
+  };
+
+  const impactData = () => {
+    return impactValues(queryParams)
+      .then(response => {
+        setImpactAnalyasis(response.data.data);
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      })
+  };
+
+  const unitGraphValues = () =>{
+    return unitGraph(queryParams).then(response =>{
+      setUnitAnalyasis(response.data.data)
+    }).catch(error => {
+      console.error('Error fetching data:', error);
+    })
+  }
 
   return (
     <>
@@ -87,22 +98,15 @@ const Summary = () => {
                 <div className="col-md-2">
                   <div className="fillter_box">
                     <div className="form-group">
-                      <select className="form-select form-control">
-                        <option>Month</option>
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                        <option>4</option>
-                        <option>5</option>
-                        <option>6</option>
-                        <option>7</option>
-                        <option>8</option>
-                        <option>9</option>
-                        <option>10</option>
-                        <option>11</option>
-                        <option>12</option>
-                      </select>
-                      <span>
+                      <DatePicker
+                        className="form-select form-control"
+                        selected={startDate}
+                        onChange={(date) => setStartDate(date)}
+                        dateFormat="MMMM yyyy"
+                        placeholderText="Select a year"
+                        showMonthYearPicker
+                      />
+                      <span className="icon-box">
                         <FaAngleDown className="icon" />
                       </span>
                     </div>
@@ -118,7 +122,7 @@ const Summary = () => {
                         <option>Date</option>
                         <option>Week</option>
                       </select>
-                      <span>
+                      <span className="icon-box">
                         <FaAngleDown className="icon" />
                       </span>
                     </div>
@@ -216,7 +220,7 @@ const Summary = () => {
                   bottom: 5,
                 }}
               >
-                <XAxis dataKey="name" />
+                <XAxis dataKey="month" />
                 <YAxis type="number" domain={[0, 200]} />
                 <Tooltip />
                 <Line
@@ -225,7 +229,7 @@ const Summary = () => {
                   stroke="#38b6ff"
                   activeDot={{ r: 8 }}
                 />
-                <Line type="monotone" dataKey="uv" stroke="#82ca9d" />
+                <Line type="monotone" dataKey="quantity" stroke="#82ca9d" />
               </LineChart>
               <p>Monthly Bisostove Distribution Chart</p>
             </div>
@@ -235,18 +239,24 @@ const Summary = () => {
             <h2>Absolute Impact Analyasis</h2>
             <div className="container">
               <div className="impact_box">
-                <div className="project_box">
-                  <h3>300 kg</h3>
-                  <p>Reduction in Fuel Consumption</p>
-                </div>
-                <div className="project_box">
-                  <h3> <FaIndianRupeeSign size={50}/> 1500 </h3>
-                  <p>Reduction in Cost of Procurment</p>
-                </div>
-                <div className="project_box">
-                  <h3>150 Hrs</h3>
-                  <p>Reduction in Time for Obtaining wood</p>
-                </div>
+                {impactAnalyasis.map(data =>{
+                    return (
+                      <>
+                      <div className="project_box">
+                        <h3>{data.reduction_in_consumption} kg</h3>
+                        <p>Reduction in Fuel Consumption</p>
+                      </div>
+                        <div className="project_box">
+                        <h3> <FaIndianRupeeSign size={50}/> {data.reduction_in_procurement} </h3>
+                        <p>Reduction in Cost of Procurment</p>
+                      </div>
+                      <div className="project_box">
+                        <h3>{data.reduction_in_time_obtaining_wood} Hrs</h3>
+                        <p>Reduction in Time for Obtaining wood</p>
+                      </div> 
+                    </>
+                    )
+                })}
               </div>
             </div>
           </div>
@@ -258,7 +268,7 @@ const Summary = () => {
                 <ComposedChart
                   width={500}
                   height={300}
-                  data={averageFuelData}
+                  data={unitAnalyasis}
                   margin={{
                     top: 0,
                     right: 20,
@@ -267,10 +277,10 @@ const Summary = () => {
                   }}
                 >
                   <CartesianGrid stroke="#f5f5f5" />
-                  <XAxis dataKey="name" />
+                  <XAxis dataKey="site" />
                   <YAxis type="number" domain={[0, 6]} />
                   <Tooltip />
-                  <Bar dataKey="uv" barSize={100} fill="#38b6ff" />
+                  <Bar dataKey="avg_fuel_consumption" barSize={100} fill="#38b6ff" />
                 </ComposedChart>
                 <p>Average Fuel Consumption(Kg/day)</p>
               </div>
@@ -278,7 +288,7 @@ const Summary = () => {
                 <ComposedChart
                   width={500}
                   height={300}
-                  data={averageFuelData}
+                  data={unitAnalyasis}
                   margin={{
                     top: 0,
                     right: 20,
@@ -287,10 +297,10 @@ const Summary = () => {
                   }}
                 >
                   <CartesianGrid stroke="#f5f5f5" />
-                  <XAxis dataKey="name" />
+                  <XAxis dataKey="site" />
                   <YAxis type="number" domain={[0, 6]} />
                   <Tooltip />
-                  <Bar dataKey="uv" barSize={100} fill="#5271ff" />
+                  <Bar dataKey="avg_cost_procuring_wood" barSize={100} fill="#5271ff" />
                 </ComposedChart>
                 <p>Average Cost of Procuring Wood(INR/Month/Household)</p>
               </div>
@@ -298,7 +308,7 @@ const Summary = () => {
                 <ComposedChart
                   width={500}
                   height={300}
-                  data={averageFuelData}
+                  data={unitAnalyasis}
                   margin={{
                     top: 0,
                     right: 20,
@@ -307,10 +317,10 @@ const Summary = () => {
                   }}
                 >
                   <CartesianGrid stroke="#f5f5f5" />
-                  <XAxis dataKey="name" />
+                  <XAxis dataKey="site" />
                   <YAxis type="number" domain={[0, 6]} />
                   <Tooltip />
-                  <Bar dataKey="uv" barSize={100} fill="#004aad" />
+                  <Bar dataKey="avg_time_procuring_wood" barSize={100} fill="#004aad" />
                 </ComposedChart>
                 <p>Average Time Procuring Wood(Hrs/Day)</p>
               </div>

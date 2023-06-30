@@ -46,6 +46,7 @@
     background-color: #fff !important;
     box-shadow: none !important;
     border-radius: 0 35px 0 0 !important;
+    width: 250px !important;
 }
 .main-sidebar ul li a{
     color: #d62527 !important;

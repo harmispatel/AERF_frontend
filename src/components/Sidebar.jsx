@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import "./index.css";
 import { Link, useLocation } from "react-router-dom";
-// import { FaAngleDown, FaAngleLeft } from "react-icons/fa6";
 
 const Sidebar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -23,8 +22,6 @@ const Sidebar = () => {
     setInventoryReport(!inventoryReport)
   }
 
-  console.log(currentRoute);
-
   return (
     <>
       <aside className="main-sidebar sidebar-dark-primary elevation-4">
@@ -36,8 +33,8 @@ const Sidebar = () => {
           <nav className="mt-2">
             <ul className="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
               <li className="nav-item" >
-                <Link to="/" className={ currentRoute === '/project-report/summary-report' ? "nav-link active" : "nav-link" }>
-                  <p>Executive Dashboards</p>
+                <Link to="/project-report/summary-report" className={ currentRoute === '/project-report/summary-report' ? "nav-link active" : "nav-link" }>
+                  Executive Dashboards
                 </Link>
               </li>
               <li className={`nav-item ${isDropdownOpen ? 'open' : ''}`}>

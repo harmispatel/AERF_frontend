@@ -46,7 +46,7 @@ const Overall = () => {
                         <option>option 2</option>
                         <option>option 3</option>
                       </select>
-                      <span><FaAngleDown className='icon' /></span>
+                      <span className="icon-box"><FaAngleDown className='icon' /></span>
                     </div>
                   </div>
                 </div>
@@ -59,7 +59,7 @@ const Overall = () => {
                         <option>option 2</option>
                         <option>option 3</option>
                       </select>
-                      <span><FaAngleDown className='icon' /></span>
+                      <span className="icon-box"><FaAngleDown className='icon' /></span>
                     </div>
                   </div>
                 </div>

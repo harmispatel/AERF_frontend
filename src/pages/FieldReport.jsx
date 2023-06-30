@@ -1,65 +1,62 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { FaAngleDown, FaIndianRupeeSign, FaMagnifyingGlass, FaDownload } from "react-icons/fa6";
 import { Bar, BarChart, CartesianGrid, Line, LineChart, Tooltip, XAxis, YAxis } from 'recharts';
+import { field_report_activity, question_response, site_wise, survey_graph } from '../services/FieldReport';
+import DatePicker from "react-datepicker";
+import { CSVLink } from 'react-csv';
 
 const FieldReport = () => {
-  const surveyData = [
-    {
-      name: "Jan,23",
-      uv: 15,
-    },
-    {
-      name: "Feb,23",
-      uv: 20,
-    },
-    {
-      name: "Mar,23",
-      uv: 10,
-    },
-    {
-      name: "Apr,23",
-      uv: 12,
-    },
-    {
-      name: "May,23",
-      uv: 25,
-    },
-    {
-      name: "June,23",
-      uv: 30,
-    },
-  ]
 
-  const sitewisedata = [
-    {
-      name: 'Lanja',
-      uv: 150,
-      pv: 50,
-      mv: 20,
-      amt: 2400,
-    },
-    {
-      name: 'Rajanwadi',
-      uv: 70,
-      pv: 20,
-      mv: 40,
-      amt: 2210,
-    },
-    {
-      name: 'Pen',
-      uv: 70,
-      pv: 10,
-      mv: 30,
-      amt: 2290,
-    },
-    {
-      name: 'Alibaug',
-      uv: 200,
-      pv: 70,
-      mv: 30,
-      amt: 2290,
-    }
-  ];
+  const [startDate, setStartDate] = useState('');
+  const [fieldActivityReport,setFieldActivityReport ] = useState([])
+  const [surveyGraphActivity,setSurveyGraphActivity ] = useState([])
+  const [sitewiseActivity,setSitewiseActivity ] = useState([])
+  const [beneficiaryData,setBeneficiaryData ] = useState([])
+
+  useEffect(()=>{
+    fieldActivity()
+    survey_graphs()
+    site_wise_graph()
+    beneficiary_data()
+  },[])
+
+  const month = 5;
+  const site_id = 1
+  const donorId = 1;
+
+  const queryParams = `month=2023-02-01&site_id=${site_id}&donor_id=${donorId}`
+
+  const fieldActivity = async () =>{
+    return await field_report_activity(queryParams).then(response =>{
+      setFieldActivityReport(response.data.data);
+    }).catch(err =>{
+      console.log(err);
+    })
+  }
+
+  const survey_graphs = async () =>{
+    return await survey_graph(queryParams).then(response =>{
+      setSurveyGraphActivity(response.data.data);
+    }).catch(err =>{
+      console.log(err);
+    })
+  }
+
+  const site_wise_graph = async () =>{
+    return await site_wise(queryParams).then(response =>{
+      setSitewiseActivity(response.data.data);
+    }).catch(err =>{
+      console.log(err);
+    })
+  }
+
+  const beneficiary_data = async () =>{
+    return await question_response(queryParams).then(response =>{
+      setBeneficiaryData(response.data.data);
+    }).catch(err =>{
+      console.log(err);
+    })
+  }
 
   return (
     <>
@@ -76,13 +73,15 @@ const FieldReport = () => {
                 <div className='col-md-2'>
                   <div className='fillter_box'>
                     <div className='form-group'>
-                      <select className='form-select form-control'>
-                        <option>Month</option>
-                        <option>option 1</option>
-                        <option>option 2</option>
-                        <option>option 3</option>
-                      </select>
-                      <span><FaAngleDown className='icon' /></span>
+                      <DatePicker
+                        className="form-select form-control"
+                        selected={startDate}
+                        onChange={(date) => setStartDate(date)}
+                        dateFormat="MMMM yyyy"
+                        placeholderText="Select a year"
+                        showMonthYearPicker
+                      />
+                      <span className="icon-box"><FaAngleDown className='icon' /></span>
                     </div>
                   </div>
                 </div>
@@ -95,7 +94,7 @@ const FieldReport = () => {
                         <option>option 2</option>
                         <option>option 3</option>
                       </select>
-                      <span><FaAngleDown className='icon' /></span>
+                      <span className="icon-box"><FaAngleDown className='icon' /></span>
                     </div>
                   </div>
                 </div>
@@ -108,62 +107,68 @@ const FieldReport = () => {
                         <option>option 2</option>
                         <option>option 3</option>
                       </select>
-                      <span><FaAngleDown className='icon' /></span>
+                      <span className="icon-box"><FaAngleDown className='icon' /></span>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          <div className='field_activity'>
-            <h2>Activity</h2>
-            <div className='field_activity_inr'>
-              <div className='field_activity_box'>
-                <h3>200/250</h3>
-                <p>Biostove Distributed</p>
-              </div>
-              <div className='field_activity_box'>
-                <h3>8</h3>
-                <p>Villages Covered</p>
-              </div>
-              <div className='field_activity_box'>
-                <h3>52/60</h3>
-                <p>EPS Collected</p>
-              </div>
-              <div className='field_activity_box'>
-                <h3>43/45</h3>
-                <p>PDS Collected</p>
-              </div>
-              <div className='field_activity_box'>
-                <h3>10k</h3>
-                <p>Amount Collected</p>
-                <FaIndianRupeeSign className='icon' />
-              </div>
-              <div className='field_activity_box'>
-                <h3>500</h3>
-                <p>Amount Due</p>
-                <FaIndianRupeeSign className='icon' />
-              </div>
-            </div>
-            <div className='field_activity_inr_bottom'>
-              <div className='field_activity_box'>
-                <h3>25%</h3>
-                <p>PDS to Beneficiary</p>
-              </div>
-              <div className='field_activity_box'>
-                <h3>30%</h3>
-                <p>EPS to Beneficiary</p>
-              </div>
-              <div className='field_activity_box'>
-                <h3>50%</h3>
-                <p>Dist to Beneficiary</p>
-              </div>
-              <div className='field_activity_box'>
-                <h3>300</h3>
-                <p>OTP verified</p>
-              </div>
-            </div>
-          </div>
+          {
+            fieldActivityReport.map((data,id)=>{
+              return(
+                <div className='field_activity' key={id}>
+                  <h2>Activity</h2>
+                  <div className='field_activity_inr'>
+                    <div className='field_activity_box'>
+                      <h3>{data.biostove_ditributed}</h3>
+                      <p>Biostove Distributed</p>
+                    </div>
+                    <div className='field_activity_box'>
+                      <h3>{data.village_covered}</h3>
+                      <p>Villages Covered</p>
+                    </div>
+                    <div className='field_activity_box'>
+                      <h3>{data.eps_collected}</h3>
+                      <p>EPS Collected</p>
+                    </div>
+                    <div className='field_activity_box'>
+                      <h3>{data.pds_collected}</h3>
+                      <p>PDS Collected</p>
+                    </div>
+                    <div className='field_activity_box'>
+                      <h3>{data.amount_collected}</h3>
+                      <p>Amount Collected</p>
+                      <FaIndianRupeeSign className='icon' />
+                    </div>
+                    <div className='field_activity_box'>
+                      <h3>{data.amount_due}</h3>
+                      <p>Amount Due</p>
+                      <FaIndianRupeeSign className='icon' />
+                    </div>
+                  </div>
+                  <div className='field_activity_inr_bottom'>
+                    <div className='field_activity_box'>
+                      <h3>{data.pds_to_ben}</h3>
+                      <p>PDS to Beneficiary</p>
+                    </div>
+                    <div className='field_activity_box'>
+                      <h3>{data.eps_to_ben}</h3>
+                      <p>EPS to Beneficiary</p>
+                    </div>
+                    <div className='field_activity_box'>
+                      <h3>{data.dist_to_ben}</h3>
+                      <p>Dist to Beneficiary</p>
+                    </div>
+                    <div className='field_activity_box'>
+                      <h3>{data.otp_verified}</h3>
+                      <p>OTP verified</p>
+                    </div>
+                  </div>
+                </div>
+              )
+            })
+          }
         </div>
 
         <div className='survey_data'>
@@ -173,7 +178,7 @@ const FieldReport = () => {
               <LineChart
                 width={500}
                 height={300}
-                data={surveyData}
+                data={surveyGraphActivity}
                 margin={{
                   top: 5,
                   right: 0,
@@ -181,7 +186,7 @@ const FieldReport = () => {
                   bottom: 5,
                 }}
               >
-                <XAxis dataKey="name" />
+                <XAxis dataKey="date" />
                 <YAxis type="number" domain={[0, 30]} />
                 <Tooltip />
                 <Line
@@ -190,7 +195,7 @@ const FieldReport = () => {
                   stroke="#38b6ff"
                   activeDot={{ r: 8 }}
                 />
-                <Line type="monotone" dataKey="uv" stroke="#82ca9d" />
+                <Line type="monotone" dataKey="eps_collected" stroke="#82ca9d" />
               </LineChart>
               <p>EPS Collected</p>
             </div>
@@ -198,7 +203,7 @@ const FieldReport = () => {
               <LineChart
                 width={500}
                 height={300}
-                data={surveyData}
+                data={surveyGraphActivity}
                 margin={{
                   top: 5,
                   right: 0,
@@ -206,7 +211,7 @@ const FieldReport = () => {
                   bottom: 5,
                 }}
               >
-                <XAxis dataKey="name" />
+                <XAxis dataKey="date" />
                 <YAxis type="number" domain={[0, 30]} />
                 <Tooltip />
                 <Line
@@ -215,7 +220,7 @@ const FieldReport = () => {
                   stroke="#38b6ff"
                   activeDot={{ r: 8 }}
                 />
-                <Line type="monotone" dataKey="uv" stroke="#82ca9d" />
+                <Line type="monotone" dataKey="distribution_forms_collected" stroke="#82ca9d" />
               </LineChart>
               <p>Distribution Forms Filled</p>
             </div>
@@ -223,7 +228,7 @@ const FieldReport = () => {
               <LineChart
                 width={500}
                 height={300}
-                data={surveyData}
+                data={surveyGraphActivity}
                 margin={{
                   top: 5,
                   right: 0,
@@ -231,7 +236,7 @@ const FieldReport = () => {
                   bottom: 5,
                 }}
               >
-                <XAxis dataKey="name" />
+                <XAxis dataKey="date" />
                 <YAxis type="number" domain={[0, 30]} />
                 <Tooltip />
                 <Line
@@ -240,7 +245,7 @@ const FieldReport = () => {
                   stroke="#38b6ff"
                   activeDot={{ r: 8 }}
                 />
-                <Line type="monotone" dataKey="uv" stroke="#82ca9d" />
+                <Line type="monotone" dataKey="pds_collected" stroke="#82ca9d" />
               </LineChart>
               <p>POS Collected</p>
             </div>
@@ -253,7 +258,7 @@ const FieldReport = () => {
             <BarChart
               width={900}
               height={300}
-              data={sitewisedata}
+              data={sitewiseActivity}
               margin={{
                 top: 5,
                 right: 0,
@@ -262,12 +267,12 @@ const FieldReport = () => {
               }}
             >
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
+              <XAxis dataKey="site" />
               <YAxis type="number" domain={[0, 200]} />
               <Tooltip />
-              <Bar dataKey="pv" barSize={80} fill="#38b6ff" />
-              <Bar dataKey="uv" barSize={80} fill="#5271ff" />
-              <Bar dataKey="mv" barSize={80} fill="#004aad" />
+              <Bar dataKey="eps_collected" barSize={80} fill="#38b6ff" />
+              <Bar dataKey="pds_collected" barSize={80} fill="#5271ff" />
+              <Bar dataKey="distribution_forms_collected" barSize={80} fill="#004aad" />
             </BarChart>
             <p>Sitewise Field Activity</p>
           </div>
@@ -275,18 +280,18 @@ const FieldReport = () => {
 
         <div className='data_table'>
           <div className='data_table_header'>
-            <h2>Question Responses</h2>
+            <h2>Beneficiary Data</h2>
             <div className='d-flex align-items-center'>
               <div className='data_search'>
                 <input className='form-control' placeholder='Search Name / Contact' type='text' />
                 <FaMagnifyingGlass className='icon' />
               </div>
-              <span className='ml-3'><FaDownload className='icon' /></span>
+              <span className='csv_bt'><CSVLink data={beneficiaryData}><FaDownload className='icon' /></CSVLink></span>
             </div>
           </div>
           <table className='table m-0'>
             <thead>
-              <tr>
+              <tr className='text-center'>
                 <th>ID</th>
                 <th>Name</th>
                 <th>Contact</th>
@@ -298,78 +303,22 @@ const FieldReport = () => {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>1</td>
-                <td>Beneficiary</td>
-                <td>98xxx xxxx</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td>
-                  <div className='status_part'>
-                    <ul>
-                      <li><label className='active'></label></li>
-                      <li><label className='active'></label></li>
-                      <li><label className='active'></label></li>
-                    </ul>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td>1</td>
-                <td>Beneficiary</td>
-                <td>98xxx xxxx</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td>
-                  <div className='status_part'>
-                    <ul>
-                      <li><label className='active'></label></li>
-                      <li><label className='inactive'></label></li>
-                      <li><label className='inactive'></label></li>
-                    </ul>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td>1</td>
-                <td>Beneficiary</td>
-                <td>98xxx xxxx</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td>
-                  <div className='status_part'>
-                    <ul>
-                      <li><label className='active'></label></li>
-                      <li><label className='inactive'></label></li>
-                      <li><label className='inactive'></label></li>
-                    </ul>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td>1</td>
-                <td>Beneficiary</td>
-                <td>98xxx xxxx</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td>
-                  <div className='status_part'>
-                    <ul>
-                      <li><label className='inactive'></label></li>
-                      <li><label className='active'></label></li>
-                      <li><label className='inactive'></label></li>
-                    </ul>
-                  </div>
-                </td>
-              </tr>
+              {
+                beneficiaryData.map((data,id) =>{
+                  return (
+                    <tr className='text-center' key={id}>
+                      <td>{data.id}</td>
+                      <td>{data.name}</td>
+                      <td>{data.contact}</td>
+                      <td>{data.village}</td>
+                      <td>{data.block}</td>
+                      <td>{data.wadi}</td>
+                      <td>{data.distribution_date}</td>
+                      <td>{data.status}</td>
+                    </tr>
+                  )
+                })
+              }
             </tbody>
           </table>
         </div>

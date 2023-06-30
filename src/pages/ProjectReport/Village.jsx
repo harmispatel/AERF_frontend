@@ -1,8 +1,54 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import "../index.css";
 import { FaAngleDown, FaDownload } from "react-icons/fa6";
+import { Beneficiary, projectMetric } from '../../services/Village';
+import DatePicker from "react-datepicker";
+import { CSVLink } from 'react-csv';
 
 const Village = () => {
+
+  const [startDate, setStartDate] = useState('');
+  const [metricsData,setMetricsData] =useState([])
+  const [beneficiaryData,setBeneficiaryData] = useState([])
+
+  useEffect(() => {
+    fetchData()
+    beneficiary_Data()
+  }, []);
+
+  // const month = 2023-03-01;
+  const village_id = 1;
+  const wadi_id = 1;
+
+  const queryParams = `village_id=${village_id}&wadi_id=${wadi_id}&month=2023-03-01`
+
+  const fetchData = () => {
+    return projectMetric(queryParams)
+      .then(response => {
+        setMetricsData(response.data.data);
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      })
+  };
+
+  const beneficiary_Data = () => {
+    return Beneficiary(queryParams)
+      .then(response => {
+        setBeneficiaryData(response.data.data);
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      })
+  };
+
+  const csvData = [
+    ["firstname", "lastname", "email"],
+    ["Ahmed", "Tomi", "ah@smthing.co.com"],
+    ["Raed", "Labes", "rl@smthing.co.com"],
+    ["Yezzi", "Min l3b", "ymin@cocococo.com"]
+  ];
+
   return (
     <>
       <div className="content-wrapper iframe-mode" data-widget="iframe" data-loading-screen="750">
@@ -24,7 +70,7 @@ const Village = () => {
                         <option>option 2</option>
                         <option>option 3</option>
                       </select>
-                      <span><FaAngleDown className='icon' /></span>
+                      <span className="icon-box"><FaAngleDown className='icon' /></span>
                     </div>
                   </div>
                 </div>
@@ -37,20 +83,24 @@ const Village = () => {
                         <option>option 2</option>
                         <option>option 3</option>
                       </select>
-                      <span><FaAngleDown className='icon' /></span>
+                      <span className="icon-box"><FaAngleDown className='icon' /></span>
                     </div>
                   </div>
                 </div>
                 <div className='col-md-2'>
                   <div className='fillter_box'>
                     <div className='form-group'>
-                      <select className='form-select form-control'>
-                        <option>Month</option>
-                        <option>option 1</option>
-                        <option>option 2</option>
-                        <option>option 3</option>
-                      </select>
-                      <span><FaAngleDown className='icon' /></span>
+                      <DatePicker
+                        className="form-select form-control"
+                        selected={startDate}
+                        onChange={(date) => setStartDate(date)}
+                        dateFormat="MMMM yyyy"
+                        placeholderText="Select a year"
+                        showMonthYearPicker
+                      />
+                      <span className="icon-box">
+                        <FaAngleDown className="icon" />
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -60,19 +110,23 @@ const Village = () => {
           <div className='village_detail_main'>
             <div className='row'>
               <div className='col-md-6'>
-                <div className='village_detail_inr'>
-                  <h2>Project Metrics</h2>
-                  <div className='village_detail_box_main'>
-                    <div className='village_detail_box'>
-                      <h3>35</h3>
-                      <p>Beneficiaries Household Impacted</p>
-                    </div>
-                    <div className='village_detail_box'>
-                      <h3>120</h3>
-                      <p>Total Lives Impacted</p>
+                {metricsData.map(data=>{
+                  return(
+                  <div className='village_detail_inr'>
+                    <h2>Project Metrics</h2>
+                    <div className='village_detail_box_main'>
+                      <div className='village_detail_box'>
+                        <h3>{data.beneficiary_household_impacted}</h3>
+                        <p>Beneficiaries Household Impacted</p>
+                      </div>
+                      <div className='village_detail_box'>
+                        <h3>{data.Total_lives_impacted}</h3>
+                        <p>Total Lives Impacted</p>
+                      </div>
                     </div>
                   </div>
-                </div>
+                  )
+                })}
               </div>
               <div className='col-md-6'>
                 <div className='location_map'>
@@ -85,7 +139,7 @@ const Village = () => {
           <div className='data_table'>
             <div className='data_table_header'>
               <h2>Beneficiary Data</h2>
-              <span><FaDownload className='icon' /></span>
+              <span className='csv_bt'><CSVLink data={beneficiaryData}><FaDownload className='icon' /></CSVLink></span>
             </div>
             <table className='table m-0'>
               <thead>
@@ -99,38 +153,19 @@ const Village = () => {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>1</td>
-                  <td>Beneficiary</td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td>1</td>
-                  <td>Beneficiary</td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td>1</td>
-                  <td>Beneficiary</td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td>1</td>
-                  <td>Beneficiary</td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
+                {beneficiaryData.map(data=>{
+                    return(
+                      <>
+                        <tr>
+                          <td>1</td>
+                          <td>{data.Name}</td>
+                          <td>{data.date}</td>
+                          <td>{data.Village}</td>
+                          <td>{data.Block}</td>
+                          <td>{data.wadi}</td>
+                        </tr>
+                      </>
+                    )})}
               </tbody>
             </table>
           </div>
