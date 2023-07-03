@@ -10,6 +10,7 @@ import FieldReport from './pages/FieldReport';
 import FormReport from './pages/FormReport';
 import Overall from './pages/InventoryReport/Overall';
 import Orders from './pages/InventoryReport/Orders';
+import { Login } from './pages/auth/login';
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
           <Route path='overall-inventory' element={<Overall/>}  />
           <Route path='orders' element={<Orders />}  />
         </Route>
+        <Route path='login' element={<Login />}  />
       </Routes>
     </>
   );
