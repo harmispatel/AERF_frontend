@@ -168,7 +168,7 @@
     column-gap: 20px;
 }
 
-.village_detail_main .location_map h2,.overall_info_main h2,.village_detail_main h2,.data_table h2,.field_main .field_activity h2,.survey_data h2,.overall_inventory_graph h2{
+.village_detail_main .location_map h2,.overall_info_main h2,.village_detail_main h2,.field_main .field_activity h2,.survey_data h2,.overall_inventory_graph h2{
     font-size: 20px;
     margin-bottom: 15px;
 }
@@ -177,10 +177,20 @@
     height: 170px !important;
 }
 
+.overall_inventory .data_table_header{
+    align-items: baseline;
+}
+
 .data_table_header{
     display: flex;
     align-items: center;
     justify-content: space-between;
+    margin-bottom: 25px;
+}
+
+.data_table_header h2{
+    font-size: 20px;
+    margin: 0;
 }
 
 .data_table_header span{
@@ -192,6 +202,7 @@
     background-color: #d62527;
     color: #fff;
     border-radius: 50%;
+    margin-left: 15px;
 }
 .data_table_header .csv_bt a {
     color: #fff;
@@ -265,7 +276,7 @@
     margin-bottom: 15px;
 }
 
-.data_search .form-control{
+.data_search input{
     border: none;
     border-bottom: 2px solid #b7b7b7;
     border-radius: 0;
@@ -463,4 +474,26 @@
     padding: 10px 30px;
     border: none;
     background-color: #d42527;
+}
+
+.table_filter h3{
+    font-size: 22px;
+    margin: 0;
+}
+
+.table_filter{
+    display: flex;
+    align-items: center;
+}
+
+.table_filter button.badge{
+    background-color: #adafb2;
+    border: none;
+    padding: 5px 15px;
+    color: #fff !important;
+    font-size: 15px;
+    margin: 0 10px;
+}
+.table_filter button.badge.active,.table_filter button.badge:hover{
+    background-color: #f3c5c6;
 }

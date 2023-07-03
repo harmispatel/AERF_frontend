@@ -31,17 +31,6 @@ const [unitAnalyasis,setUnitAnalyasis] = useState([])
     },
   ]
 
-  const averageFuelData =[
-    {
-      name: "Before Using Biostove",
-      uv: 6,
-    },
-    {
-      name: "After Using Biostove",
-      uv: 2.5,
-    }
-  ]
-
   useEffect(() => {
     fetchData()
     impactData()

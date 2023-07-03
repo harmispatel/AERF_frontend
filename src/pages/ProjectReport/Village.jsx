@@ -42,13 +42,6 @@ const Village = () => {
       })
   };
 
-  const csvData = [
-    ["firstname", "lastname", "email"],
-    ["Ahmed", "Tomi", "ah@smthing.co.com"],
-    ["Raed", "Labes", "rl@smthing.co.com"],
-    ["Yezzi", "Min l3b", "ymin@cocococo.com"]
-  ];
-
   return (
     <>
       <div className="content-wrapper iframe-mode" data-widget="iframe" data-loading-screen="750">
