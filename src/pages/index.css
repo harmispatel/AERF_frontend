@@ -264,8 +264,16 @@
     border-bottom-width: 1px;
 }
 
-.qna_data_table .table thead th:first-child,.qna_data_table .table tbody tr td:first-child{
+.qna_data_table .table thead tr th{
+    border-bottom: 0;
+}
+
+.qna_data_table .table tbody tr td:first-child{
     border-right: 2px solid #dee2e6;
+}
+
+.qna_data_table .table tbody tr td{
+    border-top: 0;
 }
 
 .data_search{
