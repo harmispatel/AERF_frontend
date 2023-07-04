@@ -1,40 +1,21 @@
 import React, { useEffect, useState } from "react";
-import {
-  FaAngleDown,
-  FaIndianRupeeSign,
-  FaMagnifyingGlass,
-  FaDownload,
-} from "react-icons/fa6";
-import {
-  Bar,
-  BarChart,
-  CartesianGrid,
-  Line,
-  LineChart,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
-import {
-  field_report_activity,
-  question_response,
-  site_wise,
-  survey_graph,
-} from "../services/FieldReport";
+import { FaAngleDown,FaIndianRupeeSign,FaMagnifyingGlass,FaDownload } from "react-icons/fa6";
+import { Bar,BarChart,CartesianGrid,Line,LineChart,Tooltip,XAxis,YAxis } from "recharts";
+import { field_report_activity,question_response,site_wise,survey_graph } from "../services/FieldReport";
 import DatePicker from "react-datepicker";
 import { CSVLink } from "react-csv";
-import Autocomplete from "react-autocomplete";
+import Autosuggest from "react-autosuggest";
 
 const FieldReport = () => {
-  const [searchValue, setSearchValue] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
+  
   const [startDate, setStartDate] = useState("");
   const [fieldActivityReport, setFieldActivityReport] = useState([]);
   const [surveyGraphActivity, setSurveyGraphActivity] = useState([]);
   const [sitewiseActivity, setSitewiseActivity] = useState([]);
   const [beneficiaryData, setBeneficiaryData] = useState([]);
-
-  const data = ["Apple", "Banana", "Cherry", "Date", "Elderberry"];
+  const [searchValue, setSearchValue] = useState('');
+  const [suggestions, setSuggestions] = useState([]);
+  const [selectedItem, setSelectedItem] = useState(null);
 
   useEffect(() => {
     fieldActivity();
@@ -89,13 +70,37 @@ const FieldReport = () => {
       });
   };
 
-  const handleSearchChange = (e) => {
-    const value = e.target.value;
-    setSearchValue(value);
-    const filteredResults = beneficiaryData.filter((item) =>
-      item.name.toLowerCase().includes(value.toLowerCase())
-    );
-    setSearchResults(filteredResults);
+  const getSuggestions = (value) => {
+    const inputValue = value.trim().toLowerCase();
+    const inputLength = inputValue.length;
+    return inputLength === 0 ? [] : beneficiaryData.filter(item => item.name.toLowerCase().slice(0, inputLength) === inputValue);
+  };
+
+  const onSuggestionsFetchRequested = ({ value }) => {
+    setSuggestions(getSuggestions(value));
+  };
+
+  const onSuggestionsClearRequested = () => {
+    setSuggestions([]);
+  };
+
+  const onSuggestionSelected = (_, { suggestion }) => {
+    setSelectedItem(suggestion);
+  };
+
+  const getSuggestionValue = (suggestion) => suggestion.name;
+
+  const renderSuggestion = (suggestion) => (
+    <div>
+      {suggestion.name}
+    </div>
+  );
+
+  const inputProps = {
+    value: searchValue,
+    type: "search",
+    placeholder: "Enter name",
+    onChange: (_, { newValue }) => setSearchValue(newValue)
   };
 
   return (
@@ -355,27 +360,21 @@ const FieldReport = () => {
 
             <div className="d-flex align-items-center">
               <div className="data_search">
-                {/* <input className='form-control' placeholder='Search Name / Contact' type='text' /> */}
-                <Autocomplete
-                  className='form-control'
-                  getItemValue={(item) => item}
-                  items={searchResults}
-                  renderItem={(item, isHighlighted) => (
-                    <div
-                      key={item}
-                      style={{
-                        background: isHighlighted ? "lightgray" : "white",
-                      }}
-                    >
-                      {item.name}
-                    </div>
-                  )}
-                  value={searchValue}
-                  onChange={handleSearchChange}
-                  onSelect={(value) => setSearchValue(value)}
-                />
-
-                <FaMagnifyingGlass className="icon" />
+              <Autosuggest
+                className="form-control"
+                suggestions={suggestions}
+                onSuggestionsFetchRequested={onSuggestionsFetchRequested}
+                onSuggestionsClearRequested={onSuggestionsClearRequested}
+                onSuggestionSelected={onSuggestionSelected}
+                getSuggestionValue={getSuggestionValue}
+                renderSuggestion={renderSuggestion}
+                alwaysRenderSuggestions={true}
+                inputProps={inputProps}
+              />
+                {
+                  searchValue.length === 0 &&
+                    <FaMagnifyingGlass className="icon" />
+                }
               </div>
               <span className="csv_bt">
                 <CSVLink data={beneficiaryData}>
@@ -397,22 +396,40 @@ const FieldReport = () => {
                 <th>Status</th>
               </tr>
             </thead>
-            <tbody>
-              {beneficiaryData.map((data, id) => {
-                return (
-                  <tr className="text-center" key={id}>
-                    <td>{data.id}</td>
-                    <td>{data.name}</td>
-                    <td>{data.contact}</td>
-                    <td>{data.village}</td>
-                    <td>{data.block}</td>
-                    <td>{data.wadi}</td>
-                    <td>{data.distribution_date}</td>
-                    <td>{data.status}</td>
-                  </tr>
-                );
-              })}
+            {
+              selectedItem ? (
+                <tbody>
+                    <tr className="text-center">
+                      <td>{selectedItem.id}</td>
+                      <td>{selectedItem.name}</td>
+                      <td>{selectedItem.contact}</td>
+                      <td>{selectedItem.village}</td>
+                      <td>{selectedItem.block}</td>
+                      <td>{selectedItem.wadi}</td>
+                      <td>{selectedItem.distribution_date}</td>
+                      <td>{selectedItem.status}</td>
+                    </tr>
+              </tbody>
+              ) :(
+                <tbody>
+                    {beneficiaryData.map((data, id) => {
+                      return (
+                        <tr className="text-center" key={id}>
+                          <td>{data.id}</td>
+                          <td>{data.name}</td>
+                          <td>{data.contact}</td>
+                          <td>{data.village}</td>
+                          <td>{data.block}</td>
+                          <td>{data.wadi}</td>
+                          <td>{data.distribution_date}</td>
+                          <td>{data.status}</td>
+                        </tr>
+                      );
+                    })}
             </tbody>
+              )
+            }
+            
           </table>
         </div>
       </div>

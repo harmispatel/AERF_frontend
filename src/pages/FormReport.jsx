@@ -3,6 +3,7 @@ import { FaAngleDown, FaDownload , FaMagnifyingGlass , FaUser , FaPhone , FaCale
 import { active_question, profile_info, question_responses, survey_info } from '../services/FormReport';
 import DatePicker from "react-datepicker";
 import { CSVLink } from 'react-csv';
+import Autosuggest from "react-autosuggest";
 
 const FormReport = () => {
 
@@ -11,6 +12,9 @@ const FormReport = () => {
   const [questionDetails,setQuestionDetails] = useState([])
   const [questionResponses,setQuestionResponses] = useState([])
   const [profileData,setProfileData] = useState([])
+  const [searchValue, setSearchValue] = useState('');
+  const [suggestions, setSuggestions] = useState([]);
+  const [selectedItem, setSelectedItem] = useState(null);
 
   useEffect(()=>{
     SurveyData()
@@ -58,6 +62,41 @@ const FormReport = () => {
       console.log(err);
     })
   }
+
+  const getSuggestions = (value) => {
+    const inputValue = value.trim().toLowerCase();
+    const inputLength = inputValue.length;
+    return inputLength === 0 ? [] : questionResponses.filter(item => item.q_id.toLowerCase().slice(0, inputLength) === inputValue);
+  };
+
+  const onSuggestionsFetchRequested = ({ value }) => {
+    setSuggestions(getSuggestions(value));
+  };
+
+  const onSuggestionsClearRequested = () => {
+    setSuggestions([]);
+  };
+
+  const onSuggestionSelected = (_, { suggestion }) => {
+    setSelectedItem(suggestion);
+  };
+
+  const getSuggestionValue = (suggestion) => suggestion.q_id;
+
+  const renderSuggestion = (suggestion) => (
+    <div>
+      {suggestion.q_id}
+    </div>
+  );
+
+  console.log(searchValue.length);
+
+  const inputProps = {
+    value: searchValue,
+    type: "search",
+    placeholder: "Enter question",
+    onChange: (_, { newValue }) => setSearchValue(newValue)
+  };
 
   return (
     <>
@@ -179,8 +218,21 @@ const FormReport = () => {
               <h2>Question Responses</h2>
             <div className='data_table_header'>
               <div className='data_search'>
-                <input className='form-control' placeholder='Search Name / Contact' type='text' />
-                <FaMagnifyingGlass className='icon'/>
+                <Autosuggest
+                  className="form-control"
+                  suggestions={suggestions}
+                  onSuggestionsFetchRequested={onSuggestionsFetchRequested}
+                  onSuggestionsClearRequested={onSuggestionsClearRequested}
+                  onSuggestionSelected={onSuggestionSelected}
+                  getSuggestionValue={getSuggestionValue}
+                  renderSuggestion={renderSuggestion}
+                  alwaysRenderSuggestions={true}
+                  inputProps={inputProps}
+               />
+                {
+                  searchValue.length === 0 &&
+                    <FaMagnifyingGlass className="icon" />
+                }
               </div>
               <div className='user_info'>
                 {profileData.map((data,id)=>{
@@ -213,19 +265,29 @@ const FormReport = () => {
                   <th>Answer</th>
                 </tr>
               </thead>
-              <tbody>
-               {
-                  questionResponses.map((data,id) =>{
-                    return (
-                      <tr className='text-center' key={id}>
-                        <td>{id + 1}</td>
-                        <td>{data.q_id}</td>
-                        <td>{data.answer}</td>
-                      </tr>
-                    )
-                  })
-               }
-              </tbody>
+              {
+                selectedItem ? (
+                <tbody>
+                  <tr className='text-center'>
+                    <td>1</td>
+                    <td>{selectedItem.q_id}</td>
+                    <td>{selectedItem.answer}</td>
+                  </tr>
+                </tbody>)
+               : (
+                  <tbody>
+                    {questionResponses.map((data,id) =>{
+                      return (
+                        <tr className='text-center' key={id}>
+                          <td>{id + 1}</td>
+                          <td>{data.q_id}</td>
+                          <td>{data.answer}</td>
+                        </tr>
+                      )})
+                    }
+                  </tbody>
+                )
+              }
             </table>
           </div>
         </div>

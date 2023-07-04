@@ -276,12 +276,55 @@
     margin-bottom: 15px;
 }
 
-.data_search input{
+.data_search{
+    position: relative;
+}
+
+.data_search input.form-control,.react-autosuggest__input{
     border: none;
     border-bottom: 2px solid #b7b7b7;
     border-radius: 0;
     font-size: 14px;
     width: 200px;
+    position: relative;
+}
+
+.react-autosuggest__input{
+    padding: 7px 15px;
+}
+
+.data_search input.form-control:focus,.react-autosuggest__input:focus{
+    box-shadow: none;
+}
+
+
+
+.react-autosuggest__input:focus-visible {
+    border: none;
+}
+
+.data_search .react-autosuggest__suggestions-list{
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    width: 100%;
+    top:100%;
+    left: 0;
+    position: absolute;
+    background-color: #fff;
+    padding:20px 10px;
+    box-shadow: 0 2px 10px rgb(212 37 39 / 30%);
+    border-radius: 10px;
+}
+
+.data_search .react-autosuggest__suggestions-list li{
+    padding: 5px;
+}
+
+.data_search .react-autosuggest__suggestions-list li:hover{
+    background-color: #f3c5c6;
+    color: #fff;
+    cursor: pointer;
 }
 
 .data_search .icon{
