@@ -1,23 +1,37 @@
-import axios from 'axios';
+import call from './Call';
 
-const API_BASE_URL = 'http://13.234.16.28:6050';
+const field_report_activity = async (queryParams) => {
+    let d = await call({
+      path: `bs_fld_1?${queryParams}`,
+      method: "GET",
+    });
+    return d;
+ };
 
-export const field_report_activity = (queryParams) => {
-  const url = `${API_BASE_URL}/bs_fld_1?${queryParams}`;
-  return axios.get(url);
-};
+ const survey_graph = async (queryParams) => {
+    let d = await call({
+      path: `bs_fld_2?${queryParams}`,
+      method: "GET",
+    });
+    return d;
+ };
+ 
+ const site_wise = async (queryParams) => {
+    let d = await call({
+      path: `bs_fld_3?${queryParams}`,
+      method: "GET",
+    });
+    return d;
+ };
 
-export const survey_graph = (queryParams) => {
-    const url = `${API_BASE_URL}/bs_fld_2?${queryParams}`;
-    return axios.get(url);
-};
+ const question_response = async (queryParams) => {
+    let d = await call({
+      path: `bs_fld_4?${queryParams}`,
+      method: "GET",
+    });
+    return d;
+ };
 
-export const site_wise = (queryParams) => {
-    const url = `${API_BASE_URL}/bs_fld_3?${queryParams}`;
-    return axios.get(url);
-}
+ const exportObject = {site_wise,survey_graph,field_report_activity,question_response}
 
-export const question_response = (queryParams) => {
-    const url = `${API_BASE_URL}/bs_fld_4?${queryParams}`;
-    return axios.get(url);
-}
+export default exportObject

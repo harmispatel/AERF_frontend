@@ -2,7 +2,8 @@
 .main-header{
     margin: 0 !important;
     margin-bottom: 20px !important;
-    background-color: transparent !important;
+    /* background-color: transparent !important; */
+    z-index: 999;
     color: #000 !important;
     padding: 15px 30px !important;
     border: none;
@@ -36,6 +37,14 @@
     background-color: transparent;
     border:1px solid #d62527;
     color:#d62527;
+}
+.logout_btn{
+    border-bottom: 2px solid #d62527;
+    border-radius: 0;
+    margin-right: 15px;
+}
+.no_img{
+    mix-blend-mode: darken
 }
 
 /* sidebar */

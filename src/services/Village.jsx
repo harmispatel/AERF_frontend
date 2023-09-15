@@ -1,13 +1,21 @@
-import axios from 'axios';
+import call from './Call';
 
-const API_BASE_URL = 'http://13.234.16.28:6050';
-
-export const projectMetric = (queryParams) => {
-  const url = `${API_BASE_URL}/bs_prj_vlge_1?${queryParams}`;
-  return axios.get(url);
+const projectMetric = async (queryParams) => {
+  let d = await call({
+    path: `bs_prj_vlge_1?${queryParams}`,
+    method: "GET",
+  });
+  return d;
 };
 
-export const Beneficiary = (queryParams) => {
-    const url = `${API_BASE_URL}/bs_prj_vlge_3?${queryParams}`;
-    return axios.get(url);
+const Beneficiary = async (queryParams) => {
+  let d = await call({
+    path: `bs_prj_vlge_3?${queryParams}`,
+    method: "GET",
+  });
+  return d;
 };
+
+const exportObject = {projectMetric,Beneficiary}
+
+export default exportObject

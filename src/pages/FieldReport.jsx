@@ -1,324 +1,367 @@
 import React, { useEffect, useState } from "react";
-import { FaAngleDown,FaIndianRupeeSign,FaMagnifyingGlass,FaDownload } from "react-icons/fa6";
-import { Bar,BarChart,CartesianGrid,Line,LineChart,Tooltip,XAxis,YAxis } from "recharts";
-import { field_report_activity,question_response,site_wise,survey_graph } from "../services/FieldReport";
-import DatePicker from "react-datepicker";
+import DataBox from "../components/filters/DataBox";
+import Donor from "../components/filters/Donor";
+import Site from "../components/filters/Site";
+import FieldService from "../services/FieldReport";
+import moment from "moment";
+import LinesChart from "../components/graphs/LineChart";
+import { Bar, BarChart, CartesianGrid, Tooltip, XAxis, YAxis } from "recharts";
 import { CSVLink } from "react-csv";
-import Autosuggest from "react-autosuggest";
+import { FaDownload } from "react-icons/fa6";
+import { GoDotFill } from "react-icons/go";
+import noData from "../assets/images/no_data.jpeg";
+import StartMonth from "../components/filters/StartMonth";
+import EndMonth from "../components/filters/EndMonth";
 
 const FieldReport = () => {
-  
   const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [DonorData, setDonorData] = useState("");
+  const [siteData, setSiteData] = useState("");
   const [fieldActivityReport, setFieldActivityReport] = useState([]);
   const [surveyGraphActivity, setSurveyGraphActivity] = useState([]);
   const [sitewiseActivity, setSitewiseActivity] = useState([]);
   const [beneficiaryData, setBeneficiaryData] = useState([]);
-  const [searchValue, setSearchValue] = useState('');
-  const [suggestions, setSuggestions] = useState([]);
+  const [OriginalBeneficiaryData, setOriginalBeneficiaryData] = useState([]);
+  const [searchfilter, setSearchFilter] = useState("initial");
   const [selectedItem, setSelectedItem] = useState(null);
+  const [eps, setEPS] = useState(false);
+  const [dist, setDist] = useState(false);
+  const [pds, setPDS] = useState(false);
+
+  useEffect(()=>{
+    const FieldParams = sessionStorage.getItem("field_filter")
+
+    const startMonthFromSession = sessionStorage.getItem("fieldStartMonth");
+    const endMonthFromSession = sessionStorage.getItem("fieldEndMonth");
+    const donorIdFromSession = sessionStorage.getItem("fieldDonor_id")
+    const siteFromSession = sessionStorage.getItem("fieldSite")
+
+    if (startMonthFromSession || endMonthFromSession || donorIdFromSession || siteFromSession ) {
+      setStartDate(new Date(startMonthFromSession));
+      setEndDate(new Date(endMonthFromSession));
+      setDonorData(donorIdFromSession);
+      setSiteData(siteFromSession);
+    }
+
+    fieldActivity(FieldParams);
+    survey_graphs(FieldParams);
+    site_wise_graph(FieldParams);
+    beneficiary_data(FieldParams);
+
+  },[])
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const startMonth = moment(startDate).format("yyyy-MM-DD");
+    const endMonth = moment(endDate).format("yyyy-MM-DD");
+    const queryParams = `site_id=${siteData}&donor_id=${DonorData}&start_date=${startMonth}&end_date=${endMonth}`;
+
+    sessionStorage.setItem("field_filter", queryParams);
+    sessionStorage.setItem("fieldStartMonth", startMonth);
+    sessionStorage.setItem("fieldEndMonth", endMonth);
+    sessionStorage.setItem("fieldSite", siteData);
+    sessionStorage.setItem("fieldDonor_id", DonorData);
+
+    try {
+      await fieldActivity(queryParams);
+      await survey_graphs(queryParams);
+      await site_wise_graph(queryParams);
+      await beneficiary_data(queryParams);
+
+      // All APIs were successfully called and data is set in their respective states.
+      console.log("All API calls completed successfully.");
+    } catch (error) {
+      console.error("Error in one or more API calls:", error);
+    }
+  };
+
+  const fieldActivity = async (queryParams) => {
+    return await FieldService.field_report_activity(queryParams)
+      .then((response) => {
+        setFieldActivityReport(response.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const survey_graphs = async (queryParams) => {
+    return await FieldService.survey_graph(queryParams)
+      .then((response) => {
+        setSurveyGraphActivity(response.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const site_wise_graph = async (queryParams) => {
+    return await FieldService.site_wise(queryParams)
+      .then((response) => {
+        setSitewiseActivity(response.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const beneficiary_data = async (queryParams) => {
+    return await FieldService.question_response(queryParams)
+      .then((response) => {
+        setBeneficiaryData(response.data);
+        setOriginalBeneficiaryData(response.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   useEffect(() => {
-    fieldActivity();
-    survey_graphs();
-    site_wise_graph();
-    beneficiary_data();
-  }, []);
+    if (searchfilter === "initial") return;
+    if (searchfilter === "") {
+      setBeneficiaryData(OriginalBeneficiaryData);
+      return;
+    }
+    setBeneficiaryData(
+      OriginalBeneficiaryData.filter((item) =>
+        item.b_name.toLowerCase().includes(searchfilter.toLowerCase())
+      )
+    );
+  }, [searchfilter, OriginalBeneficiaryData]);
 
-  const month = 5;
-  const site_id = 1;
-  const donorId = 1;
-
-  const queryParams = `month=2023-02-01&site_id=${site_id}&donor_id=${donorId}`;
-
-  const fieldActivity = async () => {
-    return await field_report_activity(queryParams)
-      .then((response) => {
-        setFieldActivityReport(response.data.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+  const handleEPS = () => {
+    setEPS(!eps);
+    setPDS(false);
+    setDist(false);
   };
 
-  const survey_graphs = async () => {
-    return await survey_graph(queryParams)
-      .then((response) => {
-        setSurveyGraphActivity(response.data.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+  const handleDist = () => {
+    setEPS(false);
+    setPDS(false);
+    setDist(!dist);
   };
 
-  const site_wise_graph = async () => {
-    return await site_wise(queryParams)
-      .then((response) => {
-        setSitewiseActivity(response.data.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+  const handlePDS = () => {
+    setEPS(false);
+    setPDS(!pds);
+    setDist(false);
   };
 
-  const beneficiary_data = async () => {
-    return await question_response(queryParams)
-      .then((response) => {
-        setBeneficiaryData(response.data.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
-  const getSuggestions = (value) => {
-    const inputValue = value.trim().toLowerCase();
-    const inputLength = inputValue.length;
-    return inputLength === 0 ? [] : beneficiaryData.filter(item => item.name.toLowerCase().slice(0, inputLength) === inputValue);
-  };
-
-  const onSuggestionsFetchRequested = ({ value }) => {
-    setSuggestions(getSuggestions(value));
-  };
-
-  const onSuggestionsClearRequested = () => {
-    setSuggestions([]);
-  };
-
-  const onSuggestionSelected = (_, { suggestion }) => {
-    setSelectedItem(suggestion);
-  };
-
-  const getSuggestionValue = (suggestion) => suggestion.name;
-
-  const renderSuggestion = (suggestion) => (
-    <div>
-      {suggestion.name}
-    </div>
-  );
-
-  const inputProps = {
-    value: searchValue,
-    type: "search",
-    placeholder: "Enter name",
-    onChange: (_, { newValue }) => setSearchValue(newValue)
-  };
+  const filteredIntenDetails =
+    beneficiaryData !== undefined &&
+    beneficiaryData.filter((data) => {
+      if (eps && data?.form_list_dict.EPS === 1) {
+        return true;
+      }
+      if (dist && data?.form_list_dict.DF === 1) {
+        return true;
+      }
+      if (pds && data?.form_list_dict.PDS === 1) {
+        return true;
+      }
+      return false;
+    });
 
   return (
-    <>
-      <div
-        className="content-wrapper iframe-mode"
-        data-widget="iframe"
-        data-loading-screen="750"
-      >
-        <div className="field_main">
-          <div className="fillter_part">
-            <div className="container">
-              <div className="row align-items-center">
-                <div className="col-md-2">
-                  <div className="fillter_box">
-                    <h3>Fillter</h3>
+    <div
+      className="content-wrapper iframe-mode"
+      data-widget="iframe"
+      data-loading-screen="750"
+    >
+      <div className="field_main">
+        <div className="fillter_part">
+          <div className="container">
+            <div className="row align-items-center">
+              <div className="col-md-2">
+                <div className="fillter_box">
+                  <h3>Filter</h3>
+                </div>
+              </div>
+              <div className="col-md-2">
+                <div className="fillter_box">
+                  <div className="form-group">
+                    <StartMonth
+                      selected={startDate}
+                      setdate={setStartDate}
+                      startDate={startDate}
+                      endDate={endDate}
+                    />
                   </div>
                 </div>
-                <div className="col-md-2">
-                  <div className="fillter_box">
-                    <div className="form-group">
-                      <DatePicker
-                        className="form-select form-control"
-                        selected={startDate}
-                        onChange={(date) => setStartDate(date)}
-                        dateFormat="MMMM yyyy"
-                        placeholderText="Select a year"
-                        showMonthYearPicker
-                      />
-                      <span className="icon-box">
-                        <FaAngleDown className="icon" />
-                      </span>
-                    </div>
+              </div>
+              <div className="col-md-2">
+                <div className="fillter_box">
+                  <div className="form-group">
+                    <EndMonth
+                      selected={endDate}
+                      setdate={setEndDate}
+                      startDate={endDate}
+                      endDate={endDate}
+                    />
                   </div>
                 </div>
-                <div className="col-md-2">
-                  <div className="fillter_box">
-                    <div className="form-group">
-                      <select className="form-select form-control">
-                        <option>Site</option>
-                        <option>option 1</option>
-                        <option>option 2</option>
-                        <option>option 3</option>
-                      </select>
-                      <span className="icon-box">
-                        <FaAngleDown className="icon" />
-                      </span>
-                    </div>
+              </div>
+              <div className="col-md-2">
+                <div className="fillter_box">
+                  <div className="form-group">
+                    <Site siteData={siteData} setdata={setSiteData} />
                   </div>
                 </div>
-                <div className="col-md-2">
-                  <div className="fillter_box">
-                    <div className="form-group">
-                      <select className="form-select form-control">
-                        <option>Donor</option>
-                        <option>option 1</option>
-                        <option>option 2</option>
-                        <option>option 3</option>
-                      </select>
-                      <span className="icon-box">
-                        <FaAngleDown className="icon" />
-                      </span>
-                    </div>
+              </div>
+              <div className="col-md-2">
+                <div className="fillter_box">
+                  <div className="form-group">
+                    <Donor donordata={DonorData} setdata={setDonorData} />
                   </div>
                 </div>
+              </div>
+              <div className="col-md-2 text-end">
+                <butoon
+                  type="button"
+                  onClick={handleSubmit}
+                  className="btn admin-btn"
+                >
+                  Submit
+                </butoon>
               </div>
             </div>
           </div>
-          {fieldActivityReport.map((data, id) => {
-            return (
-              <div className="field_activity" key={id}>
-                <h2>Activity</h2>
-                <div className="field_activity_inr">
-                  <div className="field_activity_box">
-                    <h3>{data.biostove_ditributed}</h3>
-                    <p>Biostove Distributed</p>
-                  </div>
-                  <div className="field_activity_box">
-                    <h3>{data.village_covered}</h3>
-                    <p>Villages Covered</p>
-                  </div>
-                  <div className="field_activity_box">
-                    <h3>{data.eps_collected}</h3>
-                    <p>EPS Collected</p>
-                  </div>
-                  <div className="field_activity_box">
-                    <h3>{data.pds_collected}</h3>
-                    <p>PDS Collected</p>
-                  </div>
-                  <div className="field_activity_box">
-                    <h3>{data.amount_collected}</h3>
-                    <p>Amount Collected</p>
-                    <FaIndianRupeeSign className="icon" />
-                  </div>
-                  <div className="field_activity_box">
-                    <h3>{data.amount_due}</h3>
-                    <p>Amount Due</p>
-                    <FaIndianRupeeSign className="icon" />
-                  </div>
-                </div>
-                <div className="field_activity_inr_bottom">
-                  <div className="field_activity_box">
-                    <h3>{data.pds_to_ben}</h3>
-                    <p>PDS to Beneficiary</p>
-                  </div>
-                  <div className="field_activity_box">
-                    <h3>{data.eps_to_ben}</h3>
-                    <p>EPS to Beneficiary</p>
-                  </div>
-                  <div className="field_activity_box">
-                    <h3>{data.dist_to_ben}</h3>
-                    <p>Dist to Beneficiary</p>
-                  </div>
-                  <div className="field_activity_box">
-                    <h3>{data.otp_verified}</h3>
-                    <p>OTP verified</p>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
         </div>
 
-        <div className="survey_data">
-          <h2>Survey Collection</h2>
+        <div className="field_activity">
+          <h2>Activity</h2>
+
+          {fieldActivityReport === undefined ? (
+            <div className="text-center">
+              <img src={noData} alt="no_data" height={180} />
+            </div>
+          ) : (
+            fieldActivityReport.map((data, id) => {
+              return (
+                <>
+                  <div className="field_activity_inr">
+                    <DataBox
+                      className1="field_activity_box"
+                      amount={data.biostove_ditributed}
+                      name="Biostove Distributed"
+                    />
+                    <DataBox
+                      className1="field_activity_box"
+                      amount={data.village_covered}
+                      name="Villages Covered"
+                    />
+                    <DataBox
+                      className1="field_activity_box"
+                      amount={data.eps_collected}
+                      name="EPS Collected"
+                    />
+                    <DataBox
+                      className1="field_activity_box"
+                      amount={data.pds_collected}
+                      name="PDS Collected"
+                    />
+                    <DataBox
+                      className1="field_activity_box"
+                      rupee="rupee"
+                      amount={data.amount_collected}
+                      name="Amount Collected"
+                    />
+                    <DataBox
+                      className1="field_activity_box"
+                      rupee="rupee"
+                      amount={data.amount_due}
+                      name="Amount Due"
+                    />
+                  </div>
+                  <div className="field_activity_inr_bottom">
+                    <DataBox
+                      className1="field_activity_box"
+                      percen="percen"
+                      amount={data.pds_to_ben}
+                      name="PDS to Beneficiary"
+                    />
+                    <DataBox
+                      className1="field_activity_box"
+                      amount={data.eps_to_ben}
+                      percen="percen"
+                      name="EPS to Beneficiary"
+                    />
+                    <DataBox
+                      className1="field_activity_box"
+                      amount={data.dist_to_ben}
+                      percen="percen"
+                      name="Dist to Beneficiary"
+                    />
+                    <DataBox
+                      className1="field_activity_box"
+                      amount={data.otp_verified}
+                      name="OTP verified"
+                    />
+                  </div>
+                </>
+              );
+            })
+          )}
+        </div>
+      </div>
+
+      <div className="survey_data">
+        <h2>Survey Collection</h2>
+        {surveyGraphActivity?.length === 0 ? (
+          <div className="text-center">
+            <img src={noData} alt="no_data" height={180} />
+          </div>
+        ) : (
           <div className="survey_graph_data">
             <div>
-              <LineChart
+              <LinesChart
                 width={500}
                 height={300}
                 data={surveyGraphActivity}
-                margin={{
-                  top: 5,
-                  right: 0,
-                  left: 0,
-                  bottom: 5,
-                }}
-              >
-                <XAxis dataKey="date" />
-                <YAxis type="number" domain={[0, 30]} />
-                <Tooltip />
-                <Line
-                  type="monotone"
-                  dataKey="pv"
-                  stroke="#38b6ff"
-                  activeDot={{ r: 8 }}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="eps_collected"
-                  stroke="#82ca9d"
-                />
-              </LineChart>
+                XAxis="constantDate"
+                domain={[0, 30]}
+                dataKey="eps_collected"
+                stroke="#82ca9d"
+              />
               <p>EPS Collected</p>
             </div>
             <div>
-              <LineChart
+              <LinesChart
                 width={500}
                 height={300}
                 data={surveyGraphActivity}
-                margin={{
-                  top: 5,
-                  right: 0,
-                  left: 0,
-                  bottom: 5,
-                }}
-              >
-                <XAxis dataKey="date" />
-                <YAxis type="number" domain={[0, 30]} />
-                <Tooltip />
-                <Line
-                  type="monotone"
-                  dataKey="pv"
-                  stroke="#38b6ff"
-                  activeDot={{ r: 8 }}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="distribution_forms_collected"
-                  stroke="#82ca9d"
-                />
-              </LineChart>
+                XAxis="constantDate"
+                domain={[0, 30]}
+                dataKey="distribution_forms_collected"
+                stroke="#82ca9d"
+              />
               <p>Distribution Forms Filled</p>
             </div>
             <div>
-              <LineChart
+              <LinesChart
                 width={500}
                 height={300}
                 data={surveyGraphActivity}
-                margin={{
-                  top: 5,
-                  right: 0,
-                  left: 0,
-                  bottom: 5,
-                }}
-              >
-                <XAxis dataKey="date" />
-                <YAxis type="number" domain={[0, 30]} />
-                <Tooltip />
-                <Line
-                  type="monotone"
-                  dataKey="pv"
-                  stroke="#38b6ff"
-                  activeDot={{ r: 8 }}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="pds_collected"
-                  stroke="#82ca9d"
-                />
-              </LineChart>
+                XAxis="constantDate"
+                domain={[0, 30]}
+                dataKey="pds_collected"
+                stroke="#82ca9d"
+              />
               <p>POS Collected</p>
             </div>
           </div>
-        </div>
+        )}
+      </div>
 
-        <div className="sitewise_activity">
-          <h2>Site Wise Activity</h2>
+      <div className="sitewise_activity">
+        <h2>Village Wise Activity</h2>
+        {sitewiseActivity?.length === 0 ? (
+          <div className="text-center">
+            <img src={noData} alt="no_data" height={180} />
+          </div>
+        ) : (
           <div className="siteWise_graph">
             <BarChart
               width={900}
@@ -332,8 +375,8 @@ const FieldReport = () => {
               }}
             >
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="site" />
-              <YAxis type="number" domain={[0, 200]} />
+              <XAxis dataKey="a_village_name" />
+              <YAxis type="number" domain={[0, 50]} />
               <Tooltip />
               <Bar dataKey="eps_collected" barSize={80} fill="#38b6ff" />
               <Bar dataKey="pds_collected" barSize={80} fill="#5271ff" />
@@ -343,46 +386,71 @@ const FieldReport = () => {
                 fill="#004aad"
               />
             </BarChart>
-            <p>Sitewise Field Activity</p>
+            <p>Village Wise Field Activity</p>
           </div>
-        </div>
+        )}
+      </div>
 
-        <div className="data_table">
-          <div className="data_table_header">
-            <h2>Beneficiary Data</h2>
+      <div className="data_table">
+        <div className="data_table_header">
+          <h2>Beneficiary Data</h2>
 
-            <div className="table_filter">
-              <h3>Filter :</h3>
-              <button className="badge rounded-pill">EPS</button>
-              <button className="badge rounded-pill">Dist</button>
-              <button className="badge rounded-pill">PDS</button>
-            </div>
+          <div className="table_filter">
+            <h3>Filter :</h3>
+            <button
+              className={
+                eps === true
+                  ? "badge rounded-pill active"
+                  : "badge rounded-pill"
+              }
+              onClick={handleEPS}
+            >
+              EPS
+            </button>
+            <button
+              className={
+                dist === true
+                  ? "badge rounded-pill active"
+                  : "badge rounded-pill"
+              }
+              onClick={handleDist}
+            >
+              Dist
+            </button>
+            <button
+              className={
+                pds === true
+                  ? "badge rounded-pill active"
+                  : "badge rounded-pill"
+              }
+              onClick={handlePDS}
+            >
+              PDS
+            </button>
+          </div>
 
-            <div className="d-flex align-items-center">
-              <div className="data_search">
-              <Autosuggest
+          <div className="d-flex align-items-center">
+            <div className="data_search">
+              <input
+                onKeyUp={(e) => setSearchFilter(e.target.value)}
                 className="form-control"
-                suggestions={suggestions}
-                onSuggestionsFetchRequested={onSuggestionsFetchRequested}
-                onSuggestionsClearRequested={onSuggestionsClearRequested}
-                onSuggestionSelected={onSuggestionSelected}
-                getSuggestionValue={getSuggestionValue}
-                renderSuggestion={renderSuggestion}
-                alwaysRenderSuggestions={true}
-                inputProps={inputProps}
+                placeholder="Search Name Here"
+                type="text"
               />
-                {
-                  searchValue.length === 0 &&
-                    <FaMagnifyingGlass className="icon" />
-                }
-              </div>
-              <span className="csv_bt">
-                <CSVLink data={beneficiaryData}>
+            </div>
+            <span className="csv_bt">
+              {beneficiaryData !== undefined && (
+                <CSVLink
+                  data={beneficiaryData}
+                  filename={"Field-Beneficiary-Data"}
+                >
                   <FaDownload className="icon" />
                 </CSVLink>
-              </span>
-            </div>
+              )}
+            </span>
           </div>
+        </div>
+        <div className="field_scroll">
           <table className="table m-0">
             <thead>
               <tr className="text-center">
@@ -396,44 +464,165 @@ const FieldReport = () => {
                 <th>Status</th>
               </tr>
             </thead>
-            {
-              selectedItem ? (
-                <tbody>
-                    <tr className="text-center">
-                      <td>{selectedItem.id}</td>
-                      <td>{selectedItem.name}</td>
-                      <td>{selectedItem.contact}</td>
-                      <td>{selectedItem.village}</td>
-                      <td>{selectedItem.block}</td>
-                      <td>{selectedItem.wadi}</td>
-                      <td>{selectedItem.distribution_date}</td>
-                      <td>{selectedItem.status}</td>
-                    </tr>
+            {beneficiaryData?.length === 0 || beneficiaryData === undefined ? (
+              <tbody>
+                <tr>
+                  <td colspan="8" class="text-center">
+                    <span className="text-danger">
+                      <strong>No Data Available</strong>
+                    </span>
+                  </td>
+                </tr>
               </tbody>
-              ) :(
-                <tbody>
-                    {beneficiaryData.map((data, id) => {
-                      return (
-                        <tr className="text-center" key={id}>
-                          <td>{data.id}</td>
-                          <td>{data.name}</td>
-                          <td>{data.contact}</td>
-                          <td>{data.village}</td>
-                          <td>{data.block}</td>
-                          <td>{data.wadi}</td>
-                          <td>{data.distribution_date}</td>
-                          <td>{data.status}</td>
-                        </tr>
-                      );
-                    })}
-            </tbody>
-              )
-            }
-            
+            ) : (
+              <>
+                {selectedItem ? (
+                  <tbody>
+                    <tr className="text-center">
+                      <td>{selectedItem.b_benefeciary_id}</td>
+                      <td>{selectedItem.b_name}</td>
+                      <td>{selectedItem.b_phone}</td>
+                      <td>{selectedItem.a_village_name}</td>
+                      <td>{selectedItem.a_block_name}</td>
+                      <td>{selectedItem.a_hamlet_name}</td>
+                      <td>{selectedItem.distributionDate}</td>
+                      <td>
+                        <GoDotFill
+                          color={
+                            selectedItem.form_list_dict.EPS === 1
+                              ? "#52eb85"
+                              : "#d8e3dc"
+                          }
+                          size={20}
+                        />
+                        <GoDotFill
+                          color={
+                            selectedItem.form_list_dict.DF === 1
+                              ? "#52eb85"
+                              : "#d8e3dc"
+                          }
+                          size={20}
+                        />
+                        <GoDotFill
+                          color={
+                            selectedItem.form_list_dict.PDS === 1
+                              ? "#52eb85"
+                              : "#d8e3dc"
+                          }
+                          size={20}
+                        />
+                      </td>
+                    </tr>
+                  </tbody>
+                ) : (
+                  <>
+                    {eps === true || dist === true || pds === true ? (
+                      <>
+                        {filteredIntenDetails.length === 0 ? (
+                          <tbody>
+                            <tr>
+                              <td colspan="8" class="text-center">
+                                <span className="text-danger">
+                                  <strong>No Data Available</strong>
+                                </span>
+                              </td>
+                            </tr>
+                          </tbody>
+                        ) : (
+                          <tbody>
+                            {filteredIntenDetails.map((data, id) => (
+                              <tr className="text-center">
+                                <td>{data.b_benefeciary_id}</td>
+                                <td>{data.b_name}</td>
+                                <td>{data.b_phone}</td>
+                                <td>{data.a_village_name}</td>
+                                <td>{data.a_block_name}</td>
+                                <td>{data.a_hamlet_name}</td>
+                                <td>{data.distributionDate}</td>
+                                <td>
+                                  <GoDotFill
+                                    color={
+                                      data.form_list_dict.EPS === 1
+                                        ? "#52eb85"
+                                        : "#d8e3dc"
+                                    }
+                                    size={20}
+                                  />
+                                  <GoDotFill
+                                    color={
+                                      data.form_list_dict.DF === 1
+                                        ? "#52eb85"
+                                        : "#d8e3dc"
+                                    }
+                                    size={20}
+                                  />
+                                  <GoDotFill
+                                    color={
+                                      data.form_list_dict.PDS === 1
+                                        ? "#52eb85"
+                                        : "#d8e3dc"
+                                    }
+                                    size={20}
+                                  />
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        )}
+                      </>
+                    ) : (
+                      <tbody>
+                        {beneficiaryData !== undefined &&
+                          beneficiaryData.map((data, id) => {
+                            data.b_benefeciary_id = id + 1;
+                            return (
+                              <tr className="text-center" key={id}>
+                                <td>{data.b_benefeciary_id}</td>
+                                <td>{data.b_name}</td>
+                                <td>{data.b_phone}</td>
+                                <td>{data.a_village_name}</td>
+                                <td>{data.a_block_name}</td>
+                                <td>{data.a_hamlet_name}</td>
+                                <td>{data.distributionDate}</td>
+                                <td>
+                                  <GoDotFill
+                                    color={
+                                      data.form_list_dict.EPS === 1
+                                        ? "#52eb85"
+                                        : "#d8e3dc"
+                                    }
+                                    size={20}
+                                  />
+                                  <GoDotFill
+                                    color={
+                                      data.form_list_dict.DF === 1
+                                        ? "#52eb85"
+                                        : "#d8e3dc"
+                                    }
+                                    size={20}
+                                  />
+                                  <GoDotFill
+                                    color={
+                                      data.form_list_dict.PDS === 1
+                                        ? "#52eb85"
+                                        : "#d8e3dc"
+                                    }
+                                    size={20}
+                                  />
+                                </td>
+                              </tr>
+                            );
+                          })}
+                      </tbody>
+                    )}
+                  </>
+                )}
+              </>
+            )}
           </table>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

@@ -1,20 +1,45 @@
-import axios from 'axios';
+import call from "./Call";
 
-const API_BASE_URL = 'http://13.234.16.28:6050';
-
-export const monthlyGraph = (queryParams) => {
-  const url = `${API_BASE_URL}/bs_prj_smry_3?${queryParams}`;
-  return axios.get(url);
+const projectMatrix = async (queryParams) => {
+   let d = await call({
+     path: `bs_prj_smry_1?${queryParams}`,
+     method: "GET",
+   });
+   return d;
 };
 
-export const impactValues= (queryParams) => {
-   const url = `${API_BASE_URL}/bs_prj_smry_4?${queryParams}`;
-   return axios.get(url);
+const villages = async (queryParams) => {
+  let d = await call({
+    path: `bs_prj_smry_2?${queryParams}`,
+    method: "GET",
+  });
+  return d;
 };
 
-export const unitGraph= (queryParams) => {
-    const url = `${API_BASE_URL}/bs_prj_smry_5?${queryParams}`;
-    return axios.get(url);
- };
+const monthlyGraph = async (queryParams) => {
+   let d = await call({
+     path: `bs_prj_smry_3?${queryParams}`,
+     method: "GET",
+   });
+   return d;
+};
 
+const impactValues = async (queryParams) => {
+   let d = await call({
+     path: `bs_prj_smry_4?${queryParams}`,
+     method: "GET",
+   });
+   return d;
+};
 
+const unitGraph = async (queryParams) => {
+   let d = await call({
+     path: `bs_prj_smry_5?${queryParams}`,
+     method: "GET",
+   });
+   return d;
+};
+
+const exportObject = {projectMatrix,monthlyGraph,impactValues,unitGraph,villages}
+
+export default exportObject

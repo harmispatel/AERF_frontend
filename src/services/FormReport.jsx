@@ -1,23 +1,56 @@
-import axios from 'axios';
+import call from "./Call";
 
-const API_BASE_URL = 'http://13.234.16.28:6050';
-
-export const survey_info = (queryParams) => {
-  const url = `${API_BASE_URL}/bs_frm_1?${queryParams}`;
-  return axios.get(url);
+const survey_info = async (queryParams) => {
+  let d = await call({
+    path: `bs_frm_1?${queryParams}`,
+    method: "GET",
+  });
+  return d;
+};
+const active_question = async (queryParams) => {
+  let d = await call({
+    path: `bs_frm_2?${queryParams}`,
+    method: "GET",
+  });
+  return d;
+};
+const question_responses = async (queryParams) => {
+  let d = await call({
+    path: `bs_frm_3?${queryParams}`,
+    method: "GET",
+  });
+  return d;
+};
+const profile_info = async (queryParams) => {
+  let d = await call({
+    path: `bs_frm_4_bn_dt?${queryParams}`,
+    method: "GET",
+  });
+  return d;
+};
+const Beneficiary_search = async (queryParams) => {
+  let d = await call({
+    path: `bs_frm_beneficiaryList?${queryParams}`,
+    method: "GET",
+  });
+  return d;
+};
+const Beneficiary_Data = async (queryParams) => {
+  let d = await call({
+    path: `bs_frm_3?${queryParams}`,
+    method: "GET",
+  });
+  return d;
+};
+const Bulk_data = async (queryParams) => {
+  let d = await call({
+    path: `bs_frm_blk_dwnld?${queryParams}`,
+    method: "GET",
+  });
+  return d;
 };
 
-export const active_question = (queryParams) => {
-    const url = `${API_BASE_URL}/bs_frm_2?${queryParams}`;
-    return axios.get(url);
-};
 
-export const question_responses = (queryParams) => {
-    const url = `${API_BASE_URL}/bs_frm_3?${queryParams}`;
-    return axios.get(url);
-};
+const exportObject = {Beneficiary_Data,profile_info,question_responses,active_question,survey_info,Beneficiary_search,Bulk_data}
 
-export const profile_info = (profileQuery) => {
-    const url = `${API_BASE_URL}/bs_frm_4_bn_dt?${profileQuery}`;
-    return axios.get(url);
-};
+export default exportObject
